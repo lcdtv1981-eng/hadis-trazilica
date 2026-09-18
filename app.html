@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="bs" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a5c3a">
+<meta name="description" content="Hadis Tražilica - Hadisi, Kur'an, Tefsir i Biblija za debatu">
+<title>Hadis Tražilica</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<style>
+:root{
+  --primary:#1a5c3a; --primary-light:#2d8a56; --primary-dark:#0e3d25;
+  --gold:#c9a84c; --gold-light:#e8d48b;
+  --bg:#f5f2eb; --card-bg:#fff; --text:#1a1a1a; --text-light:#6b6b6b;
+  --border:#e0ddd5; --shadow:0 2px 12px rgba(0,0,0,.08); --radius:16px;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+[data-theme="dark"]{
+  --primary:#2d8a56; --primary-light:#3aaf6c; --primary-dark:#1a5c3a;
+  --gold:#e8d48b; --gold-light:#f0e4b0;
+  --bg:#121212; --card-bg:#1e1e1e; --text:#e8e8e8; --text-light:#aaa;
+  --border:#333; --shadow:0 2px 12px rgba(0,0,0,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;overflow-x:hidden;transition:background .3s,color .3s}
+button{font-family:inherit}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:16px 16px 12px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{font-size:26px}
+.logo-text h1{font-size:18px;font-weight:700;letter-spacing:.5px}
+.logo-text span{font-size:10px;opacity:.8;letter-spacing:1px}
+.header-actions{display:flex;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.icon-btn:active{background:rgba(255,255,255,.3);transform:scale(.93)}
+.search-container{position:relative}
+.search-box{width:100%;padding:12px 14px 12px 40px;border:2px solid rgba(255,255,255,.2);border-radius:14px;background:rgba(255,255,255,.12);color:#fff;font-size:15px;outline:none;transition:all .3s}
+.search-box::placeholder{color:rgba(255,255,255,.6)}
+.search-box:focus{border-color:var(--gold);background:rgba(255,255,255,.18)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.7}
+.ref-hint{font-size:11px;color:rgba(255,255,255,.65);margin-top:6px;line-height:1.4}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card-bg);border-top:1px solid var(--border);display:flex;justify-content:flex-start;overflow-x:auto;padding:6px 0;padding-bottom:calc(6px + var(--safe-bottom));z-index:100;scrollbar-width:none}
+.bottom-nav::-webkit-scrollbar{display:none}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 7px;border:none;background:none;color:var(--text-light);font-size:8.5px;cursor:pointer;transition:all .2s;border-radius:10px;min-width:46px;flex-shrink:0}
+.nav-item .nav-icon{font-size:18px}
+.nav-item.active{color:var(--primary)}
+.nav-item.active .nav-icon{transform:scale(1.1)}
+.nav-item:active{transform:scale(.92)}
+
+/* PAGES */
+.page{display:none;padding-bottom:calc(78px + var(--safe-bottom))}
+.page.active{display:block}
+
+/* STAT CARDS (home) */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 16px 6px}
+.stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)}
+.stat-card .num{font-size:24px;font-weight:800;color:var(--primary)}
+.stat-card .lbl{font-size:12px;color:var(--text-light);margin-top:2px}
+.stat-card .ic{font-size:20px}
+
+/* HOME DAILY */
+.home-section{padding:16px}
+.section-title{font-size:13px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin:6px 4px 10px;display:flex;align-items:center;gap:8px}
+.section-title .count{color:var(--primary);font-weight:700}
+.random-btn{width:100%;padding:14px;border:none;border-radius:var(--radius);background:linear-gradient(135deg,var(--gold),var(--primary));color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;box-shadow:0 4px 16px rgba(26,92,58,.3)}
+.random-btn:active{transform:scale(.97)}
+.btn-row{display:flex;gap:8px;margin-top:8px}
+.btn-row .random-btn{flex:1}
+
+/* FILTERS */
+.filters-bar{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.filters-bar::-webkit-scrollbar{display:none}
+.filter-chip{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--card-bg);color:var(--text-light);font-size:12.5px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.filter-chip:active{transform:scale(.95)}
+
+/* STATS BAR */
+.stats-bar{display:flex;justify-content:space-between;align-items:center;padding:4px 16px 2px;font-size:12.5px;color:var(--text-light)}
+.stats-count{font-weight:700;color:var(--primary)}
+
+/* CARDS */
+.hadith-list{padding:8px 16px}
+.hadith-card{background:var(--card-bg);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);transition:all .3s;position:relative;overflow:hidden;animation:fadeInUp .3s ease}
+.hadith-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--primary));border-radius:4px 0 0 4px}
+.hadith-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.hadith-meta{display:flex;flex-wrap:wrap;gap:6px}
+.hadith-badge{padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.badge-collection{background:var(--primary);color:#fff}
+.badge-number{background:var(--gold);color:var(--primary-dark)}
+.badge-topic{background:var(--bg);color:var(--primary);border:1px solid var(--border)}
+.hadith-actions{display:flex;gap:2px}
+.hadith-btn{width:34px;height:34px;border-radius:10px;border:none;background:transparent;color:var(--text-light);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.hadith-btn:active{transform:scale(.9);background:var(--bg)}
+.hadith-btn.bookmarked{color:var(--gold)}
+.arabic-text{font-family:'Traditional Arabic','Scheherazade','Amiri','Arial',sans-serif;font-size:22px;line-height:2;text-align:right;direction:rtl;color:var(--text);padding:12px 16px;background:var(--bg);border-radius:12px;margin-bottom:10px;word-spacing:4px}
+.hadith-translation{font-size:15px;line-height:1.7;color:var(--text);padding-left:12px;border-left:3px solid var(--gold-light);white-space:pre-wrap}
+.hadith-narrator{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--text-light)}
+.narrator-icon{font-size:13px}
+.hadith-topic{display:inline-block;margin-top:8px;padding:4px 10px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--primary);font-weight:500}
+.card-actions{display:flex;gap:8px;margin-top:12px}
+.btn-ghost{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;text-align:center}
+.btn-ghost:active{transform:scale(.96);border-color:var(--primary);color:var(--primary)}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:40px 24px}
+.empty-state .icon{font-size:56px;margin-bottom:12px}
+.empty-state h3{font-size:17px;margin-bottom:6px}
+.empty-state p{font-size:13.5px;color:var(--text-light);line-height:1.6}
+
+/* SELECTS */
+.select-grid{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px 16px 4px;align-items:center}
+.select-grid.picker{grid-template-columns:140px 1fr}
+select{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:var(--card-bg);color:var(--text);font-size:14px;outline:none;appearance:none;cursor:pointer}
+.quran-ayet{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin:0 16px 10px;box-shadow:var(--shadow);animation:fadeInUp .25s ease}
+.quran-ref{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;display:block;margin-bottom:6px}
+.quran-text{font-size:15px;line-height:1.8;color:var(--text)}
+.quran-actions{margin-top:8px;display:flex;gap:8px}
+.ayat-tools{padding:4px 16px 10px;display:flex;gap:8px}
+.page-btn{padding:8px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--card-bg);color:var(--text);font-size:12px;cursor:pointer;font-weight:500;transition:all .2s}
+.page-btn:active{transform:scale(.95);border-color:var(--primary)}
+
+/* TEFSIR */
+.tefsir-card{margin:12px 16px;background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.tefsir-ayet{font-size:16px;line-height:1.8;padding:10px 12px;background:var(--bg);border-radius:10px;margin:8px 0;border-left:3px solid var(--gold-light)}
+.tefsir-page-info{font-size:13px;color:var(--text-light);line-height:1.6;margin:10px 0}
+
+/* SETTINGS */
+.settings-list{padding:16px}
+.settings-item{display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--card-bg);border-radius:14px;margin-bottom:8px;border:1px solid var(--border)}
+.settings-item .label{font-size:14.5px;font-weight:500}
+.settings-item .desc{font-size:12px;color:var(--text-light);margin-top:2px}
+.toggle{width:50px;height:27px;border-radius:14px;background:var(--border);position:relative;cursor:pointer;transition:background .3s;border:none;flex-shrink:0}
+.toggle.active{background:var(--primary)}
+.toggle::after{content:'';position:absolute;width:21px;height:21px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .3s;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.toggle.active::after{transform:translateX(23px)}
+.font-size-control{display:flex;align-items:center;gap:10px}
+.font-btn{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;font-weight:700;cursor:pointer}
+.font-btn:active{transform:scale(.9)}
+.font-size-label{font-size:13.5px;min-width:26px;text-align:center}
+.path-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.path-input{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none}
+.path-input:focus{border-color:var(--primary)}
+
+/* PDF VIEWER MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:flex}
+.pdf-modal{width:94%;max-width:800px;height:90vh;background:var(--card-bg);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;animation:zoomIn .25s ease}
+@keyframes zoomIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.pdf-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--primary-dark);color:#fff;font-size:13px}
+.pdf-bar .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdf-body{flex:1;position:relative}
+.pdf-body iframe{width:100%;height:100%;border:none;background:#525659}
+.pdf-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-light)}
+.pdf-canvas-wrap{flex:1;overflow:auto;background:#525659;text-align:center;position:relative}
+.pdf-canvas-wrap canvas{max-width:100%;height:auto;margin:0 auto;display:block;box-shadow:0 2px 14px rgba(0,0,0,.45)}
+.pdf-navi{position:sticky;bottom:0;display:flex;justify-content:center;align-items:center;gap:8px;padding:8px;background:rgba(20,20,20,.85)}
+.pdf-navi button{background:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:14px;color:#222;cursor:pointer}
+.pdf-navi button:active{transform:scale(.9)}
+.pdf-navi span{color:#fff;font-size:12.5px;min-width:76px;text-align:center}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(80px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(100px);background:var(--primary-dark);color:#fff;padding:11px 22px;border-radius:12px;font-size:13.5px;font-weight:500;z-index:300;transition:transform .3s;box-shadow:0 4px 20px rgba(0,0,0,.2);max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div class="logo">
+      <span class="logo-icon">📖</span>
+      <div class="logo-text">
+        <h1>Hadis Tražilica</h1>
+        <span>HADISI · KUR'AN · TEFSIR · BIBLIJA</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="randomDailyFromHeader()" title="Dnevni hadis">📅</button>
+      <button class="icon-btn" onclick="switchPage('pagePostavke',null,true)" title="Postavke">⚙️</button>
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Tema">🌙</button>
+    </div>
+  </div>
+  <div class="search-container">
+    <span class="search-icon">🔍</span>
+    <input type="search" class="search-box" id="searchInput" placeholder="Pretraži ili upiši referencu..." autocomplete="off">
+  </div>
+  <div class="ref-hint">Primjeri: <b>buhari 234</b> · <b>ebu davud 1500</b> · <b>nesai 742</b> · <b>kuran 2:255</b> · <b>tefsir 18:65</b> · <b>luka 2:12</b> · ili slobodan pojam</div>
+</header>
+
+<!-- HOME -->
+<div class="page active" id="pageHome">
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="home-section" id="serverStatus" style="padding-top:0;padding-bottom:0;font-size:13px"></div>
+  <div class="home-section">
+    <div class="section-title">📅 Dnevni hadis</div>
+    <div id="dailyCard"></div>
+    <div class="btn-row">
+      <button class="random-btn" onclick="showRandomHadith()">🎲 Nasumični hadis</button>
+      <button class="random-btn" style="background:linear-gradient(135deg,var(--primary),var(--primary-light));box-shadow:0 4px 16px rgba(26,92,58,.25)" onclick="showRandomAyet()">🎲 Nasumični ajet</button>
+    </div>
+    <div class="section-title" style="margin-top:20px">🎯 Brzi pristup</div>
+    <div class="filters-bar" style="padding:0">
+      <button class="filter-chip" onclick="openHadithRef('Buhari','1')">Buhari 1</button>
+      <button class="filter-chip" onclick="openSuraByNumber(2)">Kur'an 2</button>
+      <button class="filter-chip" onclick="openTefsirSura(2)">Tefsir Bekare</button>
+      <button class="filter-chip" onclick="openBibleRef('Matej','5','3')">Matej 5</button>
+      <button class="filter-chip" onclick="showRandomHadith()">Nasumično</button>
+    </div>
+  </div>
+</div>
+
+<!-- HADISI -->
+<div class="page" id="pageHadisi">
+  <div class="filters-bar" id="filtersBar">
+    <button class="filter-chip active" data-filter="all" onclick="setFilter('all',this)">Svi hadisi</button>
+    <button class="filter-chip" data-filter="Buhari" onclick="setFilter('Buhari',this)">Sahih Buhari</button>
+    <button class="filter-chip" data-filter="Ebu Davud" onclick="setFilter('Ebu Davud',this)">Ebu Davud</button>
+    <button class="filter-chip" data-filter="Nesai" onclick="setFilter('Nesai',this)">Nesai</button>
+  </div>
+  <div class="stats-bar"><span>Pronađeno: <span class="stats-count" id="resultCount">0</span> hadisa</span><span id="randomLabel"></span></div>
+  <div class="hadith-list" id="hadithList"></div>
+</div>
+
+<!-- KURAN -->
+<div class="page" id="pageKuran">
+  <div class="select-grid picker">
+    <select id="suraSelect"></select>
+    <button class="page-btn" onclick="openSuraRnd()">🎲</button>
+  </div>
+  <div class="ayat-tools">
+    <input type="search" class="path-input" id="quranJump" placeholder="npr. 2:255" style="flex:1">
+    <button class="page-btn" onclick="quranJumpGo()">Idi</button>
+  </div>
+  <div class="hadith-list" id="ayatList"></div>
+</div>
+
+<!-- TEFSIR -->
+<div class="page" id="pageTefsir">
+  <div class="select-grid picker">
+    <select id="tefSuraSelect"></select>
+    <input type="number" id="tefAyetInput" class="path-input" min="1" style="width:110px" placeholder="Ajet br.">
+  </div>
+  <div class="ayat-tools">
+    <button class="page-btn" onclick="tefPrev()">◀ Prethodni</button>
+    <button class="page-btn" onclick="tefNext()">Sljedeći ▶</button>
+    <button class="page-btn" onclick="tefGo()">Prikaži</button>
+  </div>
+  <div id="tefsirOut"></div>
+</div>
+
+<!-- BIBLIJA -->
+<div class="page" id="pageBiblija">
+  <div class="select-grid">
+    <select id="bookSelect"></select>
+  </div>
+  <div class="ayat-tools">
+    <input type="search" class="path-input" id="bibleJump" placeholder="npr. luka 2:12 ili ps 23" style="flex:1">
+    <button class="page-btn" onclick="bibleJumpGo()">Idi</button>
+  </div>
+  <div class="hadith-list" id="bibleList"></div>
+</div>
+
+<!-- FAVORITI -->
+<div class="page" id="pageFavoriti">
+  <div class="hadith-list" id="favoritesList"></div>
+  <div class="empty-state" id="favoritesEmpty" style="display:none">
+    <div class="icon">⭐</div>
+    <h3>Nema favorita</h3>
+    <p>Dodajte hadise u favorite pritiskom na zvjezdicu.</p>
+  </div>
+</div>
+
+<!-- BIBLIOTEKA -->
+<div class="page" id="pageBiblioteka">
+  <div class="settings-list" style="padding-top:12px">
+    <div class="section-title" style="margin-bottom:2px">📚 PDF biblioteka</div>
+    <div style="font-size:12.5px;color:var(--text-light);padding:0 4px;line-height:1.6">PDF knjige na vašem serveru. Tirmizi i Muslim se čitaju kao PDF (nemaju tekst). "Otvori" koristi ugrađeni preglednik.</div>
+    <div id="libraryList" style="margin-top:6px"></div>
+  </div>
+</div>
+
+<!-- POSTAVKE -->
+<div class="page" id="pagePostavke">
+  <div class="settings-list">
+    <div class="settings-item"><div><div class="label">Tamna tema</div><div class="desc">Uključi tamni režim rada</div></div>
+      <button class="toggle" id="darkToggle" onclick="toggleTheme()"></button></div>
+    <div class="settings-item"><div><div class="label">Arapski tekst</div><div class="desc">Prikaži arapski tekst (poznati hadisi)</div></div>
+      <button class="toggle active" id="arabicToggle" onclick="toggleArabic()"></button></div>
+    <div class="settings-item"><div><div class="label">Veličina teksta</div><div class="desc">Prilagodite veličinu teksta prevoda</div></div>
+      <div class="font-size-control"><button class="font-btn" onclick="changeTransSize(-1)">−</button><span class="font-size-label" id="transSizeLabel">15</span><button class="font-btn" onclick="changeTransSize(1)">+</button></div></div>
+    <div class="settings-item" style="flex-direction:column;align-items:flex-start">
+      <div style="width:100%"><div class="label">🌐 Adresa servera (biblioteka)</div><div class="desc">Besplatni hosting sa knjigama (Netlify). Upišite adresu i testirajte.</div>
+      <div class="path-row"><input type="text" class="path-input" id="serverUrlInput" placeholder="https://ime-sajta.netlify.app"><button class="page-btn" onclick="saveServer()">Spremi</button><button class="page-btn" onclick="testServer()">Testiraj</button></div>
+      <div style="font-size:12px;margin-top:8px" id="serverTestResult"></div></div>
+    </div>
+    <div class="settings-item" style="flex-direction:column;align-items:flex-start">
+      <div><div class="label">📚 Mapa sa knjigama (PDF, lokalno)</div><div class="desc">Koristi se za prikaz stranice u knjizi (ako nema servera). Naprimjer:</div>
+      <div class="path-row"><input type="text" class="path-input" id="libRootInput" value=""><button class="page-btn" onclick="saveLibRoot()">Spremi</button></div>
+      <button class="btn-ghost" style="margin-top:10px;width:100%" onclick="pickLibrary()">📁 Odaberi mapu sa knjigama</button></div>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav" id="bottomNav">
+  <button class="nav-item active" onclick="switchPage('pageHome',this)"><span class="nav-icon">🏠</span>Početna</button>
+  <button class="nav-item" onclick="switchPage('pageHadisi',this)"><span class="nav-icon">📿</span>Hadisi</button>
+  <button class="nav-item" onclick="switchPage('pageKuran',this)"><span class="nav-icon">📗</span>Kur'an</button>
+  <button class="nav-item" onclick="switchPage('pageTefsir',this)"><span class="nav-icon">📚</span>Tefsir</button>
+  <button class="nav-item" onclick="switchPage('pageBiblija',this)"><span class="nav-icon">✝️</span>Biblija</button>
+  <button class="nav-item" onclick="switchPage('pageBiblioteka',this)"><span class="nav-icon">📚</span>Biblioteka</button>
+  <button class="nav-item" onclick="switchPage('pageFavoriti',this)"><span class="nav-icon">⭐</span>Favoriti</button>
+  <button class="nav-item" onclick="switchPage('pagePostavke',this)"><span class="nav-icon">⚙️</span>Postavke</button>
+</nav>
+
+<div class="modal-overlay" id="pdfOverlay">
+  <div class="pdf-modal">
+    <div class="pdf-bar">
+      <span class="t" id="pdfTitle"></span>
+      <button class="icon-btn" style="width:32px;height:32px;background:rgba(255,255,255,.2)" onclick="openPdfExternal()" title="Otvori u pregledniku">↗</button>
+      <button class="icon-btn" style="width:32px;height:32px;background:rgba(255,255,255,.2)" onclick="closePdf()" title="Zatvori">✕</button>
+    </div>
+    <div class="pdf-body">
+      <div class="pdf-loading" id="pdfLoading">Otvaranje stranice...</div>
+      <iframe id="pdfFrame" title="PDF pogled"></iframe>
+      <div class="pdf-canvas-wrap" id="pdfCanvasWrap" style="display:none">
+        <canvas id="pdfCanvas"></canvas>
+        <div class="pdf-navi">
+          <button onclick="pdfPrev()">◀</button>
+          <span id="pdfPageLabel"></span>
+          <button onclick="pdfNext()">▶</button>
+          <button onclick="pdfZoomCur(-0.25)">−</button>
+          <button onclick="pdfZoomCur(0.25)">＋</button>
+          <button onclick="openPdfExternal()">↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+window.DATA = {"hb":[],"he":[],"hz":[],"q":[],"t":[],"b":[],"books":[{"kind":"hadith","title":"Buharijeva zbirka - Knjiga 1","file":"HADISI\\BUHARI HADISI\\Buharijeva_zbirka___1__knjiga 1-1771.pdf"},{"kind":"hadith","title":"Buharijeva zbirka - Knjiga 2","file":"HADISI\\BUHARI HADISI\\Buharijeva_zbirka___2__knjiga 1772-3648.pdf"},{"kind":"hadith","title":"Buharijeva zbirka - Knjiga 3","file":"HADISI\\BUHARI HADISI\\Buharijeva_zbirka___3__knjiga 3649-5350.pdf"},{"kind":"hadith","title":"Buharijeva zbirka - Knjiga 4","file":"HADISI\\BUHARI HADISI\\Buharijeva_zbirka___4__knjiga 5351-7563.pdf"},{"kind":"hadith","title":"Sunen Ebu Davuda - Knjiga 1","file":"HADISI\\EBU DAVUD\\Sunen Ebu Davuda 1(IB).pdf"},{"kind":"hadith","title":"Sunen Ebu Davuda - Knjiga 2","file":"HADISI\\EBU DAVUD\\Sunen Ebu Davuda 2 (IB).pdf"},{"kind":"hadith","title":"Sunen Ebu Davuda - Knjiga 3","file":"HADISI\\EBU DAVUD\\Sunen Ebu Davuda 3 (IB).pdf"},{"kind":"hadith","title":"Sunen Ebu Davuda - Knjiga 4","file":"HADISI\\EBU DAVUD\\Sunen Ebu Davuda 4 (IB).pdf"},{"kind":"hadith","title":"Sunen Ebu Davuda - Knjiga 5","file":"HADISI\\EBU DAVUD\\Sunen Ebu Davuda 5 (IB).pdf"},{"kind":"hadith","title":"Sunen Ebu Davuda - Knjiga 6","file":"HADISI\\EBU DAVUD\\Sunen Ebu Davuda 6 (IB).pdf"},{"kind":"hadith","title":"Sunen Ebu Davuda - Knjiga 7","file":"HADISI\\EBU DAVUD\\Sunen Ebu Davuda 7 (IB).pdf"},{"kind":"quran","title":"Kur'an - Mlivo","file":"KUR AN\\Prijevod Kur’ana, Mustafa Mlivo.pdf"},{"kind":"quran","title":"Kur'an - Mehanović","file":"KUR AN\\Prevod Kur'ana - Muhamed Mehanovic.pdf"},{"kind":"bible","title":"Biblija","file":"BIBLIJE\\biblija.pdf"},{"kind":"hadith","title":"Nesaijeva zbirka hadisa - Tom 1","file":"Sunen Nesaijeva\\Sunen - Nesaijeva zbirka hadisa 1. tom.pdf"},{"kind":"hadith","title":"Nesaijeva zbirka hadisa - Tom 2","file":"Sunen Nesaijeva\\Sunen - Nesaijeva zbirka hadisa 2. tom.pdf"}],"cur":[{"n":1,"c":"Buhari","ar":"إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى","tr":"Uista, djela se vrednuju prema namjerama, a svakome pripada samo ono što je naumio.","na":"Omer ibnul-Hattab, r.a.","top":"Nijjet (Namjera)"},{"n":6,"c":"Buhari","ar":"إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ","tr":"Allah ne gleda na vaše likove i imetke, nego gleda na vaša srca i djela.","na":"Ebu Hurejre, r.a.","top":"Takvalost (Bogobojaznost)"},{"n":13,"c":"Buhari","ar":"بُنِيَ الْإِسْلَامُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لا إِلَهَ إِلا اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلاةِ، وَإِيتَاءِ الزَّكَاةِ، وَحَجِّ الْبَيْتِ، وَصَوْمِ رَمَضَانَ","tr":"Islam je utemeljen na pet stvari: svjedočenju da nema drugog boga osim Allaha i da je Muhammed Allahov poslanik, obavljanju namaza, davanju zekata, hadžu i postu mjeseca ramazana.","na":"Abdullah ibn Omer, r.a.","top":"Šehadet"},{"n":164,"c":"Muslim","ar":"الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ وَالْمُهَاجِرُ مَنْ هَجَرَ مَا نَهَى اللَّهُ عَنْهُ","tr":"Musliman je onaj od koga su drugi muslimani sigurni od njegovog jezika i ruke. A muhadžir (onaj koji se iselio) je onaj koji se kloni onoga što mu je Allah zabranio.","na":"Abdullah ibn Amr, r.a.","top":"Musliman"},{"n":15,"c":"Buhari","ar":"مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ","tr":"Ko vjeruje u Allaha i Sudnji dan, neka govori dobro ili neka šuti.","na":"Abdullah ibn Amr, r.a.","top":"Dobro govorenje"},{"n":32,"c":"Muslim","ar":"لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ","tr":"Niko od vas neće biti pravi vjernik sve dok ne bude volio za svog brata ono što voli za sebe.","na":"Enes ibn Malik, r.a.","top":"Bratstvo"},{"n":50,"c":"Buhari","ar":"مَنْ لَا يَرْحَمِ النَّاسَ لَا يَرْحَمْهُ اللَّهُ","tr":"Ko ne bude milostiv prema ljudima, neće mu biti milostivo od Allaha.","na":"Džabir ibn Abdullah, r.a.","top":"Milost"},{"n":2305,"c":"Tirmizi","ar":"الدُّعَاءُ هُوَ الْعِبَادَةُ","tr":"Dova (molitva) jeste ibadet (obožavanje).","na":"Enes ibn Malik, r.a.","top":"Dova"},{"n":589,"c":"Buhari","ar":"إِنَّ اللَّهَ جَمِيلٌ يُحِبُّ الْجَمَالَ","tr":"Uista, Allah je lijep i voli ljepotu.","na":"Ebu Malike el-Eš'ari, r.a.","top":"Ljepota"},{"n":1151,"c":"Muslim","ar":"مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ","tr":"Ko krene putem tražeći znanje, Allah će mu olakšati put ka Džennetu.","na":"Ebu Hurejre, r.a.","top":"Znanje"},{"n":4681,"c":"Ebu Davud","ar":"مَنْ لَا يَهْمِهِ أَمْرُ الْآخِرَةِ لَا يَهْمِهِ أَمْرُ الدُّنْيَا","tr":"Koga ne brine stanje ahireta, toga neće brinuti ni stanje dunjaluka.","na":"Omer ibnul-Hattab, r.a.","top":"Ahiret"},{"n":611,"c":"Buhari","ar":"إِنَّ اللَّهَ لا يَنْظُرُ إِلَى الْجِسْمِ وَلا إِلَى الصُّورَةِ وَلَكِنْ يَنْظُرُ إِلَى الْقَلْبِ وَالْأَعْمَالِ","tr":"Allah ne gleda na tijelo niti na lik, nego gleda na srce i djela.","na":"Ebu Hurejre, r.a.","top":"Takvalost"},{"n":4994,"c":"Nesai","ar":"مَثَلُ الْمُؤْمِنِ الَّذِي يَقْرَأُ الْقُرْآنَ كَمَثَلِ الأُتْرُجَّةِ، طَعْمُهَا طَيِّبٌ وَرِيحُهَا طَيِّبٌ","tr":"Primjer vjernika koji čita Kur'an je kao primjer etruže (limuna): okus joj je fin i miris fin.","na":"Abdullah ibn Mes'ud, r.a.","top":"Kur'an"},{"n":1924,"c":"Tirmizi","ar":"مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ","tr":"Ko vjeruje u Allaha i Sudnji dan, neka govori dobro ili neka šuti.","na":"Abdullah ibn Amr, r.a.","top":"Šutnja"},{"n":2224,"c":"Muslim","ar":"إِنَّ اللَّهَ عَزَّ وَجَلَّ يَقُولُ: أَنَا عِنْدَ ظَنِّ عَبْدِي بِي","tr":"Uista, Allah Uzvišeni kaže: „Ja sam kod misli Svog roba o Meni.“","na":"Ebu Hurejre, r.a.","top":"Dova"},{"n":224,"c":"Ibn Madže","ar":"مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ","tr":"Ko krene putem tražeći znanje, Allah će mu olakšati put ka Džennetu.","na":"Ebu Hurejre, r.a.","top":"Znanje"},{"n":1356,"c":"Buhari","ar":"أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ","tr":"Najdraža djela kod Allaha su ona koja su najtrajnija, iako su malena.","na":"A'ša radijallahu anha","top":"Istrajnost"},{"n":2699,"c":"Muslim","ar":"لاَ تَغْضَبْ لاَ تَغْضَبْ لاَ تَغْضَبْ","tr":"Ne ljuti se! Ne ljuti se! Ne ljuti se!","na":"Ebu Deselame, r.a.","top":"Strpljivost"},{"n":2516,"c":"Tirmizi","ar":"مَنْ لَمْ يَرْضَ بِقَضَاءِ اللَّهِ لَمْ يُطْعَمْ مِنْ طَعَامِ اللَّهِ","tr":"Ko nije zadovoljan Allahovom odlukom, neće biti nahranjen Allahovom hranom.","na":"Ali ibn Ebi Talib, r.a.","top":"Kader"},{"n":8,"c":"Buhari","ar":"لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى أَكُونَ أَحَبَّ إِلَيْهِ مِنْ وَالِدِهِ وَوَلَدِهِ وَالنَّاسِ أَجْمَعِينَ","tr":"Niko od vas neće biti pravi vjernik sve dok ja ne budem draži od njegovog oca, djeteta i svih ljudi zajedno.","na":"Enes ibn Malik, r.a.","top":"Ljubav prema Poslaniku"},{"n":1599,"c":"Muslim","ar":"مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ","tr":"Allah onome kome želi dobro, podari mu razumijevanje u vjeri.","na":"Muavije, r.a.","top":"Znanje"},{"n":41,"c":"Buhari","ar":"الْمُسْلِمُ مُسْلِمٌ مِنْ لِسَانِهِ وَيَدِهِ، وَالْمُهَاجِرُ مَنْ هَجَرَ مَا نَهَى اللَّهُ عَنْهُ","tr":"Musliman je onaj od koga su drugi muslimani sigurni od njegovog jezika i ruke.","na":"Abdullah ibn Amr, r.a.","top":"Sigurnost"},{"n":2004,"c":"Tirmizi","ar":"اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ","tr":"Boj se Allaha gdje god bio, a loše djelo nadoknadi dobrim – ono će ga izbrisati – i postupaj s ljudima lijepo.","na":"Abdullah ibn Mes'ud, r.a.","top":"Bojaznost"},{"n":4797,"c":"Ebu Davud","ar":"إِنَّ اللَّهَ رَفِيقٌ يُحِبُّ الرِّفْقَ فِي الْأَمْرِ كُلِّهِ","tr":"Uista, Allah je blag i voli blagost u svemu.","na":"A'ša radijallahu anha","top":"Blagost"},{"n":522,"c":"Buhari","ar":"مَنْ لَا يَدْرِي جَهْلُهُ لَا يُكْفَرْ","tr":"Onaj koji ne zna, neće se njegovo neznanje uračunati kao nevjerstvo.","na":"Ebu Hurejre, r.a.","top":"Znanje"},{"n":2807,"c":"Muslim","ar":"إِذَا مَاتَ الْإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلاَّ مِنْ ثَلاَثَةٍ: إِلاَّ مِنْ صَدَقَةٍ جَارِيَةٍ، أَوْ عِلْمٍ يُنْتَفَعُ بِهِ، أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ","tr":"Kada čovjek umre, prekida mu se svako djelo osim troje: trajna sadaka, korisno znanje i dobro dijete koje mu dovu čini.","na":"Abdullah ibn Omer, r.a.","top":"Svakova"},{"n":5041,"c":"Nesai","ar":"خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ","tr":"Najbolji od vas je onaj koji nauči Kur'an i druge ga uči.","na":"Abdullah ibn Mes'ud, r.a.","top":"Kur'an"},{"n":27,"c":"Buhari","ar":"مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ","tr":"Kome Allah želi dobro, tomu podari razumijevanje u vjeri.","na":"Muavije, r.a.","top":"Razumijevanje"},{"n":2329,"c":"Tirmizi","ar":"الدُّعَاءُ يَنْفَعُ مَا نَزَلَ وَمَا لَمْ يَنْزِلْ فَعَلَيْكُمْ عِبَادَ اللَّهِ بِالدُّعَاءِ","tr":"Dova pomaže kod onoga što je već došlo i kod onoga što još nije došlo. Zato vas molim, robovi Allahovi, da molite Allaha.","na":"Omer ibnul-Hattab, r.a.","top":"Dova"},{"n":1348,"c":"Muslim","ar":"الدُّعَاءُ مُخُّ الْعِبَادَةِ","tr":"Dova je srž ibadeta.","na":"Enes ibn Malik, r.a.","top":"Dova"},{"n":1469,"c":"Buhari","ar":"أَكْمَلُ الْمُؤْمِنِينَ إِيمَانًا أَحْسَنُهُمْ خُلُقًا","tr":"Najpotpuniji vjernici po imanu su oni koji su najboljeg ahlaka.","na":"Ebu Hurejre, r.a.","top":"Ahlak"},{"n":2345,"c":"Musned","ar":"إِنَّ اللَّهَ لَا يَرْفَعُ عَنِ الْقَوْمِ الدَّرَجَاتِ إِلَّا بِمَا أَذَلَّ بِهِ أَنْفُسَهُمْ","tr":"Allah ne uzdiže ljude u stepene osim onoliko koliko oni sebe ponize.","na":"Abdullah ibn Omer, r.a.","top":"Poniznost"},{"n":3470,"c":"Buhari","ar":"تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ","tr":"Tvoj osmijeh u lice tvom bratu je sadaka.","na":"Džabir ibn Abdullah, r.a.","top":"Sadaka"},{"n":715,"c":"Muslim","ar":"مَنْ لَمْ يَدْخُلِ الْجَنَّةَ وَلَمْ تَدْخُلِ النَّارُ إِلاَّ أَنْ تَكُونَ لِلنَّاسِ أَمَانَةً","tr":"Ko ne uđe u Džennet i ne uđe u Džehennem, neka bude za ljude sigurnost.","na":"Abdullah ibn Mes'ud, r.a.","top":"Sigurnost"},{"n":1162,"c":"Tirmizi","ar":"مَنْ سَكَتَ فَنَجَا","tr":"Ko šuti – spasio se.","na":"Ali ibn Ebi Talib, r.a.","top":"Šutnja"},{"n":4790,"c":"Ebu Davud","ar":"مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ","tr":"Ko vjeruje u Allaha i Sudnji dan, neka govori dobro ili neka šuti.","na":"Abdullah ibn Amr, r.a.","top":"Dobro govorenje"},{"n":1599,"c":"Buhari","ar":"مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ","tr":"Kome Allah želi dobro, podari mu razumijevanje u vjeri.","na":"Muavije, r.a.","top":"Razumijevanje"},{"n":2564,"c":"Muslim","ar":"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ","tr":"Allahu moj, utječem Ti se od tuge i žalosti, utječem Ti se od nemoći i lijnosti.","na":"Ebu Hurejre, r.a.","top":"Dova"},{"n":3515,"c":"Tirmizi","ar":"إِنَّ اللَّهَ قَسَّمَ بَيْنَكُمْ أَخْلَاقَكُمْ كَمَا قَسَّمَ بَيْنَكُمْ أَرْزَاقَكُمْ","tr":"Allah vam je podijelio vaše ćudoredne osobine kao što vam je podijelio vaše opskrbe.","na":"Abdullah ibn Amr, r.a.","top":"Ahlak"},{"n":2227,"c":"Buhari","ar":"الدُّعَاءُ يَنْفَعُ مَا نَزَلَ وَمَا لَمْ يَنْزِلْ","tr":"Dova pomaže kod onoga što je već došlo i kod onoga što još nije došlo.","na":"Omer ibnul-Hattab, r.a.","top":"Dova"},{"n":2203,"c":"Muslim","ar":"إِنَّ اللَّهَ كَرِيمٌ يَسْتَحْيِي أَنْ يَرُدَّ يَدَيْهِ","tr":"Uista, Allah je darežljiv i stidi se da vrati praznih ruku (molitelja).","na":"Abdullah ibn Mes'ud, r.a.","top":"Dova"},{"n":60,"c":"Buhari","ar":"مَنْ يُرِدِ اللَّهُ بِهِ شَرًّا يُضْلِلْهُ","tr":"Kome Allah želi zlo, zalutaće ga.","na":"Ibn Omer, r.a.","top":"Kader"},{"n":5337,"c":"Nesai","ar":"لَا تَغْضَبْ وَلَا تَغْضَبْ","tr":"Ne ljuti se, ne ljuti se!","na":"Ebu Deselame, r.a.","top":"Strpljivost"},{"n":2685,"c":"Tirmizi","ar":"مَنْ صَلَّى عَلَيَّ صَلَاةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا","tr":"Ko mi donese jednu salavat (blagoslov), Allah će za nju deset puta blagosloviti njega.","na":"Abdullah ibn Mes'ud, r.a.","top":"Salavat"},{"n":3461,"c":"Buhari","ar":"الدِّينُ النَّصِيحَةُ","tr":"Vjera je iskrenost (savjetovanje).","na":"Tamim ed-Dari, r.a.","top":"Vjera"},{"n":2244,"c":"Muslim","ar":"أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ","tr":"Najdraža djela kod Allaha su ona koja su najtrajnija, iako su malena.","na":"A'ša radijallahu anha","top":"Istrajnost"},{"n":4319,"c":"Ebu Davud","ar":"إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ","tr":"Djela se vrednuju prema namjerama.","na":"Omer ibnul-Hattab, r.a.","top":"Namjera"},{"n":6800,"c":"Buhari","ar":"مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُصْلِحْهُ","tr":"Kome Allah želi dobro, popravi mu vjeru.","na":"Enes ibn Malik, r.a.","top":"Vjera"},{"n":4003,"c":"Muslim","ar":"مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُعَلِّمْهُ الْقُرْآنَ","tr":"Kome Allah želi dobro, podari mu znanje Kur'ana.","na":"Osman ibn Affan, r.a.","top":"Kur'an"},{"n":4220,"c":"Ibn Madže","ar":"مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ","tr":"Ko vjeruje u Allaha i Sudnji dan, neka govori dobro ili neka šuti.","na":"Abdullah ibn Amr, r.a.","top":"Dobro govorenje"},{"n":75,"c":"Buhari","ar":"مَنْ لَمْ يَقُلْ لَا إِلَهَ إِلاَّ اللَّهُ مِنْ قَلْبِهِ لَا يَدْخُلُ الْجَنَّةَ","tr":"Ko ne izgovori „La ilahe illallah\" iskreno srcem, neće ući u Džennet.","na":"Ebu Hurejre, r.a.","top":"Šehadet"},{"n":1205,"c":"Tirmizi","ar":"الدُّعَاءُ تِسْعُ أَعْشَارِ الْعِبَادَةِ","tr":"Dova čini devet desetina ibadeta.","na":"Enes ibn Malik, r.a.","top":"Dova"},{"n":597,"c":"Muslim","ar":"مَا مِنْ مُسْلِمٍ يَغْرِسُ غَرْسًا أَوْ يَزْرَعُ زَرْعًا ثُمَّ يَأْكُلُ مِنْهُ طَيِّرٌ أَوْ إِنْسَانٌ إِلاَّ كَانَ لَهُ بِهِ صَدَقَةٌ","tr":"Nema Muslimana koji posadi drvo ili zasije usjev, a da ptica ili čovjek ne pojede nešto od toga, a da mu to ne bude sadaka.","na":"Zejd ibn Sabit, r.a.","top":"Sadaka"},{"n":2451,"c":"Buhari","ar":"الدُّنْيَا سِجْنُ الْمُؤْمِنِ وَجَنَّةُ الْكَافِرِ","tr":"Dunjaluk je zatvor vjernika i džennet nevjernika.","na":"Abdullah ibn Omer, r.a.","top":"Dunjaluk"},{"n":2246,"c":"Ebu Davud","ar":"مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ","tr":"Ko krene putem tražeći znanje, Allah će mu olakšati put ka Džennetu.","na":"Ebu Hurejre, r.a.","top":"Znanje"},{"n":5040,"c":"Nesai","ar":"خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ","tr":"Najbolji od vas je onaj koji nauči Kur'an i druge ga uči.","na":"Abdullah ibn Mes'ud, r.a.","top":"Kur'an"},{"n":2683,"c":"Tirmizi","ar":"إِذَا مَاتَ الْإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلاَّ مِنْ ثَلاَثَةٍ","tr":"Kada čovjek umre, prekida mu se svako djelo osim troje.","na":"Abdullah ibn Omer, r.a.","top":"Svakova"},{"n":1853,"c":"Musned","ar":"تَعَلَّمِ الْعِلْمَ وَتَعَلَّمِ السَّكِينَةَ وَتَعَلَّمِ الْوَرَعَ","tr":"Nauči znanje i nauči smirenost i nauči bogobojaznost.","na":"Abdullah ibn Mes'ud, r.a.","top":"Znanje"},{"n":10,"c":"Buhari","ar":"الدِّينُ النَّصِيحَةُ. قُلْنَا: لِمَنْ؟ قَالَ: لِلَّهِ وَلِكِتَابِهِ وَلِرَسُولِهِ وَلِأَئِمَّةِ الْمُسْلِمِينَ وَعَامَّتِهِمْ","tr":"Vjera je iskrenost. Upitasmo: „Kome?“ Odgovori: „Allahu, Njegovoj knjizi, Njegovom poslaniku, imamima muslimana i njihovim običnim ljudima.\"","na":"Tamim ed-Dari, r.a.","top":"Vjera"},{"n":1955,"c":"Muslim","ar":"مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا نَفَّسَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ","tr":"Ko olakša vjerniku jednu od nevolja dunjaluka, Allah će mu olakšati jednu nevolju od nevolja Sudnjeg dana.","na":"Abu'l-Judej, r.a.","top":"Pomoć"}]};
+'use strict';
+window.DATA = window.DATA || {};
+var DATA = window.DATA;
+
+/* =====================================================
+   STATE & BUILT INDEXES
+   ===================================================== */
+var HAD = [];
+var HAD_IDX = { 'Buhari': {}, 'Ebu Davud': {}, 'Nesai': {} };
+var CUR_MAP = {};
+var BOOK_MAP = {};
+var currentFilter = 'all';
+var favorites = JSON.parse(localStorage.getItem('ht_favs') || '[]');
+var isDarkMode = localStorage.getItem('ht_dark') === 'true';
+var showArabic = localStorage.getItem('ht_arabic') !== 'false';
+var transSize = parseInt(localStorage.getItem('ht_trans') || '15', 10);
+
+function buildIndex() {
+  BOOK_MAP = {};
+  (DATA.books || []).forEach(function (b, i) {
+    BOOK_MAP[b.title] = i;
+  });
+  CUR_MAP = {};
+  (DATA.cur || []).forEach(function (c) {
+    CUR_MAP[c.c + ':' + c.n] = c;
+  });
+  HAD = [];
+  HAD_IDX = { 'Buhari': {}, 'Ebu Davud': {}, 'Nesai': {} };
+  (DATA.hb || []).forEach(function (r) {
+  var h = { c: 'Buhari', key: 'Buhari:' + r[1], f: r[0], n: r[1], p: r[2], t: r[3], v: r[4] || '', top: r[5] || '' };
+  HAD_IDX['Buhari'][h.n] = HAD.length;
+  HAD.push(h);
+});
+(DATA.he || []).forEach(function (r) {
+  var h = { c: 'Ebu Davud', key: 'Ebu Davud:' + r[1], f: r[0], n: r[1], p: r[2], t: r[3], v: r[4] || '', top: r[5] || '' };
+  HAD_IDX['Ebu Davud'][h.n] = HAD.length;
+  HAD.push(h);
+});
+(DATA.hz || []).forEach(function (r) {
+  var h = { c: 'Nesai', key: 'Nesai:' + r[1], f: r[0], n: r[1], p: r[2], t: r[3], top: r[4] || '', chap: r[5] || '' };
+  HAD_IDX['Nesai'][h.n] = HAD.length;
+  HAD.push(h);
+});
+  HAD.forEach(function (h) {
+    var cu = CUR_MAP[h.key];
+    if (cu) { h.cur = cu; }
+  });
+}
+buildIndex();
+
+function hadithRelPath(h) {
+  var title;
+  if (h.c === 'Buhari') {
+    title = 'Buharijeva zbirka - Knjiga ' + h.f;
+  } else if (h.c === 'Ebu Davud') {
+    title = 'Sunen Ebu Davuda - Knjiga ' + h.f;
+  } else {
+    title = 'Nesaijeva zbirka hadisa - Tom ' + h.f;
+  }
+  var b = (DATA.books || []).filter(function (x) { return x.title === title; })[0];
+  return b ? b.file : null;
+}
+
+/* =====================================================
+   REFERENCE PARSING
+   ===================================================== */
+var BIBLE_SHORT = {
+  'ps': 'Psalmi', 'psalmi': 'Psalmi', 'pss': 'Psalmi', 'psalm': 'Psalmi',
+  'mt': 'Matej', 'mk': 'Marko', 'lk': 'Luka', 'jn': 'Ivan', 'jov': 'Ivan',
+  'dj': 'Djela', 'dela': 'Djela', 'rim': 'Rimljanima', '1kor': '1 Korinćanima', '2kor': '2 Korinćanima',
+  'gal': 'Galaćanima', 'efež': 'Efežanima', 'efez': 'Efežanima', 'fil': 'Filipljanima', 'kol': 'Kološanima',
+  '1sol': '1 Solunjanima', '2sol': '2 Solunjanima', '1tim': '1 Timoteju', '2tim': '2 Timoteju',
+  'tit': 'Titu', 'flm': 'Filemonu', 'hebr': 'Hebrejima', 'heb': 'Hebrejima', 'jak': 'Jakovljeva',
+  '1pt': '1 Petrova', '2pt': '2 Petrova', '1jn': '1 Ivanova', 'jud': 'Judina', 'otk': 'Otkrivenje',
+  'post': 'Postanak', 'postanak': 'Postanak', 'izl': 'Izlazak', 'izlazak': 'Izlazak', 'lev': 'Levitski Zakon',
+  'br': 'Brojevi', 'brojevi': 'Brojevi', 'pnz': 'Ponovljen Zakon', 'joz': 'Jošua', 'jošua': 'Jošua',
+  'suci': 'Suci', 'ruta': 'Ruta', '1sam': '1 Samuel', '2sam': '2 Samuel', '1kralj': '1 Kraljevi', '2kralj': '2 Kraljevi',
+  '1ljet': '1 Ljetopisi', '2ljet': '2 Ljetopisi', 'ezr': 'Ezra', 'neh': 'Nehemija', 'est': 'Estera',
+  'job': 'Job', 'izr': 'Mudre Izreke', 'mudre': 'Mudre Izreke', 'prop': 'Propovjednik', 'pj': 'Pjesma Salomonova',
+  'iza': 'Izaija', 'jer': 'Jeremija', 'tuž': 'Tužaljke', 'tuz': 'Tužaljke', 'ezek': 'Ezekiel',
+  'dan': 'Daniel', 'hoz': 'Hosea', 'joel': 'Joel', 'amos': 'Amos', 'obad': 'Obadija', 'jon': 'Jona',
+  'mih': 'Mihej', 'nah': 'Nahum', 'hab': 'Habakuk', 'sef': 'Sefanija', 'hag': 'Hagaj', 'zah': 'Zaharija', 'mal': 'Malahija'
+};
+var BIBLE_ALIASES = {};
+var ONLINE_SLUGS = [];
+function rebuildBibleAliases() {
+  var m = {}, byName = {};
+  (DATA.b || []).forEach(function (b, i) {
+    var key = b.name.toLocaleLowerCase('bs').replace(/[^a-z0-9žđščć]/g, '');
+    m[key] = i;
+    byName[b.name] = i;
+  });
+  Object.keys(BIBLE_SHORT).forEach(function (k) {
+    if (byName[BIBLE_SHORT[k]] !== undefined) m[k] = byName[BIBLE_SHORT[k]];
+  });
+  BIBLE_ALIASES = m;
+  ONLINE_SLUGS = (DATA.b || []).map(function (b) { return ONLINE_NAME2SLUG[b.name]; });
+  return m;
+}
+rebuildBibleAliases();
+
+/* ---- Biblija online (biblija.ks.hr) ---- */
+var ONLINE_NAME2SLUG = {
+  'Postanak': 'knjiga-postanka', 'Izlazak': 'knjiga-izlaska', 'Levitski Zakon': 'levitski-zakonik',
+  'Brojevi': 'knjiga-brojeva', 'Ponovljen Zakon': 'ponovljeni-zakon', 'Jošua': 'josua',
+  'Suci': 'knjiga-o-sucima', 'Ruta': 'knjiga-o-ruti', '1 Samuel': 'prva-knjiga-o-samuelu',
+  '2 Samuel': 'druga-knjiga-o-samuelu', '1 Kraljevi': 'prva-knjiga-o-kraljevima',
+  '2 Kraljevi': 'druga-knjiga-o-kraljevima', '1 Ljetopisi': 'prva-knjiga-ljetopisa',
+  '2 Ljetopisi': 'druga-knjiga-ljetopisa', 'Ezra': 'ezra', 'Nehemija': 'nehemija', 'Estera': 'estera',
+  'Job': 'knjiga-o-jobu', 'Psalmi': 'psalmi', 'Mudre Izreke': 'mudre-izreke',
+  'Propovjednik': 'propovjednik', 'Pjesma Salomonova': 'pjesma-nad-pjesmama', 'Izaija': 'izaija',
+  'Jeremija': 'jeremija', 'Tužaljke': 'tuzaljke', 'Ezekiel': 'ezekiel', 'Daniel': 'daniel',
+  'Hosea': 'hosea', 'Joel': 'joel', 'Amos': 'amos', 'Obadija': 'obadija', 'Jona': 'jona',
+  'Mihej': 'mihej', 'Nahum': 'nahum', 'Habakuk': 'habakuk', 'Sefanija': 'sefanija', 'Hagaj': 'hagaj',
+  'Zaharija': 'zaharija', 'Malahija': 'malahija', 'Matej': 'evandelje-po-mateju',
+  'Marko': 'evandelje-po-marku', 'Luka': 'evandelje-po-luki', 'Ivan': 'evandelje-po-ivanu',
+  'Djela': 'djela-apostolska', 'Rimljanima': 'poslanica-rimljanima',
+  '1 Korinćanima': 'prva-poslanica-korincanima', '2 Korinćanima': 'druga-poslanica-korincanima',
+  'Galaćanima': 'poslanica-galacanima', 'Efežanima': 'poslanica-efezanima',
+  'Filipljanima': 'poslanica-filipljanima', 'Kološanima': 'poslanica-kolosanima',
+  '1 Solunjanima': 'prva-poslanica-solunjanima', '2 Solunjanima': 'druga-poslanica-solunjanima',
+  '1 Timoteju': 'prva-poslanica-timoteju', '2 Timoteju': 'druga-poslanica-timoteju',
+  'Titu': 'poslanica-titu', 'Filemonu': 'poslanica-filemonu', 'Hebrejima': 'poslanica-hebrejima',
+  'Jakovljeva': 'jakovljeva-poslanica', '1 Petrova': 'prva-petrova-poslanica',
+  '2 Petrova': 'druga-petrova-poslanica', '1 Ivanova': 'prva-ivanova-poslanica',
+  'Judina': 'poslanica-jude-apostola', 'Otkrivenje': 'otkrivenje'
+};
+var ONLINE_EXTRA = {
+  'tobija': 'tobija', 'judita': 'judita', 'baruh': 'baruh', 'sirah': 'knjiga-sirahova',
+  'sirahova': 'knjiga-sirahova', 'mudrosti': 'knjiga-mudrosti', 'knjigamudrosti': 'knjiga-mudrosti',
+  '1makabejci': 'prva-knjiga-o-makabejcima', '2makabejci': 'druga-knjiga-o-makabejcima',
+  '1mak': 'prva-knjiga-o-makabejcima', '2mak': 'druga-knjiga-o-makabejcima',
+  'psalmi': 'psalmi', 'matej': 'evandelje-po-mateju', 'luka': 'evandelje-po-luki',
+  'marko': 'evandelje-po-marku', 'ivan': 'evandelje-po-ivanu', 'izlazak': 'knjiga-izlaska',
+  'postanak': 'knjiga-postanka', 'otkrivenje': 'otkrivenje'
+};
+function bibleOnlineRef(q) {
+  q = (q || '').trim().toLocaleLowerCase('bs');
+  if (!q) return null;
+  var m = q.match(/^(.+?)\s+(\d{1,3})(?:\s*[,:]\s*(\d{1,3}))?$/);
+  var bookRaw = m ? m[1] : q;
+  var chapter = m ? +m[2] : 1;
+  var verse = (m && m[3]) ? +m[3] : 0;
+  var key = bookRaw.replace(/\s+/g, '').replace(/[^a-z0-9žđščć]/g, '');
+  var slug = ONLINE_EXTRA[key];
+  if (!slug && BIBLE_ALIASES[key] !== undefined) slug = ONLINE_SLUGS[BIBLE_ALIASES[key]];
+  if (!slug) return null;
+  var url = 'https://biblija.ks.hr/?book=' + slug + '&chapter=' + chapter;
+  if (verse) url += '&verse=' + verse;
+  return { url: url, slug: slug, chapter: chapter, verse: verse };
+}
+function openBibleOnline(q) {
+  var r = bibleOnlineRef(q);
+  if (!r) { toast('Nepoznata knjiga. npr: izlazak 1, matej 5:3, ps 23'); return; }
+  window.open(r.url, '_blank', 'noopener');
+}
+function renderBibleOnline() {
+  bibST.online = true;
+  var box = document.getElementById('bibleList');
+  box.innerHTML =
+    '<div class="tefsir-card" style="padding:16px">' +
+    '<div style="font-weight:600;margin-bottom:8px">🌐 Biblija online — biblija.ks.hr</div>' +
+    '<div style="font-size:13px;opacity:.75;margin-bottom:10px">Upiši referencu, npr. <b>izlazak 1</b>, <b>matej 1</b>, <b>luka 2:12</b></div>' +
+    '<div class="ayat-tools">' +
+    '<input type="search" class="path-input" id="bibleOnlineInput" placeholder="npr. izlazak 1 ili matej 5:3" style="flex:1" autocomplete="off">' +
+    '<button class="page-btn" onclick="bibleOnlineGo()">Otvori</button>' +
+    '</div>' +
+    '<div style="font-size:12px;opacity:.6;margin-top:8px">Otvara se u novom tabu na biblija.ks.hr</div>' +
+    '</div>';
+  var inp = document.getElementById('bibleOnlineInput');
+  inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') bibleOnlineGo(); });
+  inp.focus();
+}
+function bibleOnlineGo() {
+  var inp = document.getElementById('bibleOnlineInput');
+  openBibleOnline(inp ? inp.value : '');
+}
+
+/* =====================================================
+   ONLINE SERVER — katalog + ljenjvo učitavanje knjiga
+   ===================================================== */
+var DEFAULT_SERVER = 'https://lcdtv1981-eng.github.io/hadis-trazilica';
+var SECONDARY_SERVER = 'https://tubular-marshmallow-66e590.netlify.app';
+var serverUrl = localStorage.getItem('ht_server') || DEFAULT_SERVER;
+var tbFallback = false; // auto-fallback na drugi server ako spremljena adresa ne radi
+function srvBase() {
+  if (!serverUrl) return null;
+  return serverUrl.replace(/[\\/]+$/, '') + '/';
+}
+var CAT = null;        // učitani katalog
+var PDF_CAT = {};      // id -> {id,title,url,pages}
+var PDF_BY_TITLE = {}; // naslov -> ista stavka
+var DS = {};           // key -> učitano da/ne
+
+function loadJson(url) {
+  if (typeof fetch === 'function') {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).catch(function (e) { return xhrJson(url, e); });
+  }
+  return xhrJson(url);
+}
+function xhrJson(url, prevErr) {
+  return new Promise(function (res, rej) {
+    try {
+      var x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.timeout = 60000;
+      x.onload = function () {
+        if (x.status >= 200 && x.status < 300) {
+          try { res(JSON.parse(x.responseText)); } catch (e) { rej(e); }
+        } else rej(new Error('HTTP ' + x.status));
+      };
+      x.onerror = function () { rej(prevErr || new Error('mreža nedostupna')); };
+      x.ontimeout = function () { rej(prevErr || new Error('timeout')); };
+      x.send();
+    } catch (e) { rej(e); }
+  });
+}
+function loadCatalog() {
+  var base = srvBase();
+  if (!base) return Promise.resolve(null);
+  return loadJson(base + 'katalog.json').then(function (c) {
+    CAT = c;
+    PDF_CAT = {}; PDF_BY_TITLE = {};
+    (c.pdfs || []).forEach(function (p) {
+      var abs = p.file.indexOf('http') === 0 ? p.file : base + p.file;
+      PDF_CAT[p.id] = { id: p.id, title: p.title, url: abs, pages: p.pages || 0 };
+      if (p.title) PDF_BY_TITLE[p.title] = PDF_CAT[p.id];
+    });
+    return c;
+  }).catch(function (e) {
+    if (!tbFallback) {
+      var fall = (serverUrl === DEFAULT_SERVER) ? SECONDARY_SERVER : DEFAULT_SERVER;
+      tbFallback = true;
+      serverUrl = fall;
+      localStorage.setItem('ht_server', fall);
+      var inp = document.getElementById('serverUrlInput');
+      if (inp) inp.value = fall;
+      toast('Ta adresa nije dostupna — prebacujem na ' + (fall === DEFAULT_SERVER ? 'standardni server' : 'rezervni server') + '…');
+      return loadCatalog();
+    }
+    CAT = null;
+    toast('Katalog nije učitano: ' + (e && e.message ? e.message : 'greška'));
+    serverStatus();
+    return null;
+  });
+}
+function loadDataset(key) {
+  if (!CAT || !CAT.datasets || !CAT.datasets[key] || DS[key]) return Promise.resolve(null);
+  DS[key] = true;
+  return loadJson(srvBase() + CAT.datasets[key]).then(function (d) { return { key: key, data: d }; })
+    .catch(function (e) { DS[key] = false; throw e; });
+}
+function applyDataset(kv) {
+  if (!kv) return;
+  if (kv.key === 'buhari') DATA.hb = kv.data;
+  else if (kv.key === 'ebu') DATA.he = kv.data;
+  else if (kv.key === 'nesai') DATA.hz = kv.data;
+  else if (kv.key === 'quran') DATA.q = kv.data;
+  else if (kv.key === 'tefsir') DATA.t = kv.data;
+  else if (kv.key === 'bible') { DATA.b = kv.data; rebuildBibleAliases(); }
+}
+function refreshApp() {
+  buildIndex();
+  renderStats();
+  renderDaily();
+  serverStatus();
+  /* vraća interfejs na tek učitanim podacima */
+  var ac = document.querySelector('.page.active');
+  if (!ac) return;
+  if (ac.id === 'pageHadisi') doSearch();
+  if (ac.id === 'pageKuran') { fillSuraSelect(); renderSuraCur(); }
+  if (ac.id === 'pageTefsir') { fillTefsirSelect(); renderTefsir(); }
+  if (ac.id === 'pageBiblija') { fillBookSelect(); renderBibleBook(bibST.b, bibST.c, null); }
+}
+function serverStatus() {
+  var el = document.getElementById('serverStatus');
+  if (!el) return;
+  var t;
+  if (!srvBase()) t = '<span style="color:var(--text-light)">⚙️ Postavke → upišite adresu servera da se učita biblioteka</span>';
+  else if (!CAT) t = '<span style="color:#c0392b">📶 Server nije dostupan — provjerite adresu i internet</span>';
+  else t = '<span style="color:#1a8f4c">📶 ' + fmt(HAD.length) + ' hadisa · ' + (DATA.q ? DATA.q.length : 0) + ' sura · ' + (DATA.b ? DATA.b.length : 0) + ' biblijskih knjiga</span>';
+  el.innerHTML = t;
+}
+function loadHadithDatasets(onDone) {
+  return Promise.all(['buhari', 'ebu', 'nesai'].map(function (k) {
+    return loadDataset(k).then(function (kv) { applyDataset(kv); });
+  })).then(function () {
+    refreshApp();
+    if (onDone) onDone();
+  });
+}
+function loadQuranTefsir() {
+  return Promise.all(['quran', 'tefsir'].map(function (k) {
+    return loadDataset(k).then(function (kv) { applyDataset(kv); });
+  })).then(function () {
+    refreshApp();
+  });
+}
+function loadBible() {
+  return loadDataset('bible').then(function (kv) {
+    applyDataset(kv);
+    refreshApp();
+  });
+}
+function hasHadiths() { return (DATA.hb || []).length || (DATA.he || []).length || (DATA.hz || []).length; }
+function pdfById(id) { return PDF_CAT[id] || null; }
+function pdfByTitle(t) { return PDF_BY_TITLE[t] || null; }
+function pdfTitleForHadith(h) {
+  if (h.c === 'Buhari') return 'Buharijeva zbirka - Knjiga ' + h.f;
+  if (h.c === 'Ebu Davud') return 'Sunen Ebu Davuda - Knjiga ' + h.f;
+  return 'Nesaijeva zbirka hadisa - Tom ' + h.f;
+}
+function collectionName(h) {
+  if (h.c === 'Buhari') return 'Buharijeva zbirka';
+  if (h.c === 'Ebu Davud') return 'Sunen Ebu Davuda';
+  return 'Nesaijeva zbirka';
+}
+function libraryRender() {
+  var box = document.getElementById('libraryList');
+  var base = srvBase();
+  if (!base || !CAT) {
+    box.innerHTML = '<div class="empty-state"><div class="icon">📚</div><h3>Server nije povezan</h3><p>U Postavkama upišite adresu servera (npr. Netlify) i pritisnite "Testiraj vezu".</p></div>';
+    return;
+  }
+  var html = [];
+  html.push('<div style="display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 10px">' +
+    '<button class="page-btn" onclick="libraryRender()">🔄 Osvježi</button>' +
+    '<button class="page-btn" onclick="testServer()">🔌 Testiraj vezu</button>' +
+    '</div>');
+  (CAT.pdfs || []).forEach(function (p) {
+    var meta = PDF_CAT[p.id];
+    html.push('<div class="tefsir-card" id="lib-' + p.id + '" style="padding:14px 16px">' +
+      '<div class="lib-row" style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">' +
+      '<div><div style="font-weight:700;font-size:14.5px">📖 ' + esc(p.title) + '</div>' +
+      '<div style="font-size:12px;opacity:.65;margin-top:3px">' + esc(p.file) + (p.pages ? ' · ' + fmt(p.pages) + ' str.' : '') + '</div></div>' +
+      '<div style="flex-shrink:0"><button class="btn-ghost" onclick="openPdf(\'' + esc(p.id) + '\',0,\'' + esc(p.title).replace(/'/g, '\\\'') + '\')">Otvori</button></div>' +
+      '</div>' +
+      '<div class="lib-status" data-id="' + esc(p.id) + '" style="font-size:12px;margin-top:8px;color:var(--text-light)">Provjera dostupnosti…</div>' +
+      '</div>');
+  });
+  box.innerHTML = html.join('');
+  checkPdfAvailability();
+}
+function checkPdfAvailability() {
+  (CAT.pdfs || []).forEach(function (p) {
+    var meta = PDF_CAT[p.id];
+    if (!meta) return;
+    fetch(meta.url, { method: 'HEAD' }).then(function (r) {
+      setLibStatus(p.id, r.ok);
+    }).catch(function () { setLibStatus(p.id, false); });
+  });
+}
+function setLibStatus(id, ok) {
+  var el = document.querySelector('.lib-status[data-id="' + id + '"]');
+  if (!el) return;
+  if (ok) el.innerHTML = '<span style="color:#1a8f4c">✅ Dostupan na serveru</span>';
+  else el.innerHTML = '<span style="color:#c0392b">⚠️ Fajl još nije postavljen na server</span>';
+}
+
+
+function findHadith(c, n) {
+  var idx = HAD_IDX[c] && HAD_IDX[c][n];
+  return idx === undefined ? null : HAD[idx];
+}
+
+function parseRef(q) {
+  q = q.trim().toLocaleLowerCase('bs');
+  if (!q) return null;
+  var m;
+  // Tefsir N:M
+  if ((m = q.match(/^(?:tefsir|tfsir|t)\s*[: ]?(\d{1,3}):(\d{1,3})$/))) {
+    return { type: 'tefsir', s: +m[1], a: +m[2] };
+  }
+  // Quran N:M
+  if ((m = q.match(/^(?:kuran|kur'an|quran|kur\\'an|kk|allah)?\s*(\d{1,3}):(\d{1,3})$/))) {
+    return { type: 'quran', s: +m[1], a: +m[2] };
+  }
+  // Bible "luka 2:12" or "ps 23"
+  var bm = q.match(/^([a-zžđščć0-9]+)\s+(\d{1,3}):(\d{1,3})$/);
+  if (bm && BIBLE_ALIASES[bm[1]] !== undefined) {
+    return { type: 'bible', b: BIBLE_ALIASES[bm[1]], c: +bm[2], v: +bm[3] };
+  }
+  bm = q.match(/^([a-zžđščć0-9]+)\s+(\d{1,3})$/);
+  if (bm && BIBLE_ALIASES[bm[1]] !== undefined) {
+    return { type: 'bible', b: BIBLE_ALIASES[bm[1]], c: +bm[2], v: 1 };
+  }
+  // Hadith by number
+  if ((m = q.match(/^(buhari|bh|bo)?\s*#?\s*(\d{1,5})$/))) {
+    var pre = m[1], n = +m[2];
+    if (pre && pre !== 'bh' && pre !== 'bo') return { type: 'hadith', c: 'Buhari', n: n };
+    if (n >= 1 && n <= 7563) return { type: 'hadith', c: 'Buhari', n: n };
+    return { type: 'hadith', c: 'Ebu Davud', n: n };
+  }
+  if ((m = q.match(/^(?:ebu\s*davud|ebu|ed)\s*#?\s*(\d{1,5})$/))) {
+    return { type: 'hadith', c: 'Ebu Davud', n: +m[1] };
+  }
+  if ((m = q.match(/^(?:nesai|nesaija|ns)\s*#?\s*(\d{1,5})$/))) {
+    return { type: 'hadith', c: 'Nesai', n: +m[1] };
+  }
+  return null;
+}
+
+function gotoRef(r) {
+  if (!r) return;
+  if (r.type === 'hadith') {
+    var h = findHadith(r.c, r.n);
+    switchPage('pageHadisi', null, true);
+    setFilter('all');
+    if (h) {
+      renderHadithList([h], 'REF');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      toast('Hadis ' + r.c + ' #' + r.n + ' nije pronađen');
+      renderHadithList([], 'REF');
+    }
+    return;
+  }
+  if (r.type === 'quran') {
+    if (r.s < 1 || r.s > 114) { toast('Nevažeća sura'); return; }
+    switchPage('pageKuran', null, true);
+    renderSura(r.s, r.a);
+    return;
+  }
+  if (r.type === 'tefsir') {
+    switchPage('pageTefsir', null, true);
+    setTefsir(r.s, r.a);
+    return;
+  }
+  if (r.type === 'bible') {
+    switchPage('pageBiblija', null, true);
+    renderBibleBook(r.b, r.c, r.v);
+    return;
+  }
+}
+
+/* =====================================================
+   PAGE SWITCHING
+   ===================================================== */
+function switchPage(id, el, silent) {
+  document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
+  var target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  if (el) {
+    document.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('active'); });
+    el.classList.add('active');
+  }
+  if (id === 'pageFavoriti') renderFavorites();
+  if (id === 'pageKuran' && !document.getElementById('suraSelect').options.length) fillSuraSelect();
+  if (id === 'pageTefsir' && !document.getElementById('tefSuraSelect').options.length) fillTefsirSelect();
+  if (id === 'pageBiblija' && !document.getElementById('bookSelect').options.length) fillBookSelect();
+  if (id === 'pagePostavke') { fillLibRoot(); fillServer(); }
+  if (id === 'pageKuran' && !DATA.q.length && srvBase()) loadQuranTefsir();
+  if (id === 'pageTefsir' && !DATA.q.length && srvBase()) loadQuranTefsir();
+  if (id === 'pageBiblija' && !DATA.b.length && srvBase()) loadBible();
+  if (id === 'pageHadisi' && !hasHadiths() && srvBase()) loadHadithDatasets();
+  if (id === 'pageBiblioteka') libraryRender();
+  if (!silent) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =====================================================
+   HOME / DAILY
+   ===================================================== */
+function fmt(n) { return n.toLocaleString('bs'); }
+
+function renderStats() {
+  var q = (DATA.q || []).reduce(function (a, s) { return a + s.a.length; }, 0);
+  var bib = (DATA.b || []).reduce(function (a, b) { return a + b.c.reduce(function (aa, c) { return aa + c[1].length; }, 0); }, 0);
+  document.getElementById('statsGrid').innerHTML = [
+    ['📿', fmt(HAD.length), 'Hadisa'],
+    ['📗', fmt(q), "Ajeta Kur'ana"],
+    ['📚', '114', 'Sura · Tefsir'],
+    ['✝️', fmt(bib), 'Biblijskih stihova']
+  ].map(function (s) {
+    return '<div class="stat-card"><div class="ic">' + s[0] + '</div><div class="num">' + s[1] + '</div><div class="lbl">' + s[2] + '</div></div>';
+  }).join('');
+}
+
+function dailyIndex() {
+  var now = new Date();
+  var start = new Date(now.getFullYear(), 0, 0);
+  var day = Math.floor((now - start) / 86400000);
+  return day % (HAD.length || 1);
+}
+function renderDaily() {
+  if (!HAD.length) return;
+  var d = localStorage.getItem('ht_daily');
+  var today = new Date().toDateString();
+  var h;
+  if (d && d.indexOf(today) === 0) {
+    var idx = +d.split('|')[1];
+    h = HAD[idx % HAD.length];
+  } else {
+    h = HAD[dailyIndex()];
+    localStorage.setItem('ht_daily', today + '|' + dailyIndex());
+  }
+  var el = document.getElementById('dailyCard');
+  el.innerHTML = createHadithCard(h, 0, true);
+}
+function randomDailyFromHeader() { renderDaily(); switchPage('pageHome'); toast('📅 Dnevni hadis'); }
+function showRandomHadithFromHome() {}
+
+function showRandomHadith() {
+  if (!HAD.length) return;
+  var h = HAD[Math.floor(Math.random() * HAD.length)];
+  switchPage('pageHadisi');
+  setFilter('all');
+  renderHadithList([h], 'RND');
+  toast('🎲 Nasumični hadis');
+}
+function showRandomAyet() {
+  if (!DATA.q.length) return;
+  var s = Math.floor(Math.random() * DATA.q.length);
+  var a = Math.floor(Math.random() * DATA.q[s].a.length) + 1;
+  switchPage('pageKuran');
+  renderSura(s + 1, a);
+}
+
+/* =====================================================
+   HADITH SEARCH / RENDER
+   ===================================================== */
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('#filtersBar .filter-chip').forEach(function (c) { c.classList.toggle('active', c.getAttribute('data-filter') === f); });
+  doSearch();
+}
+
+function matchesHadith(h, ql) {
+  var cu = h.cur;
+  if (ql && ql.indexOf(' ') === -1 && /^\d{1,5}$/.test(ql)) {
+    return String(h.n) === String(+ql).replace(/^0+/, '') || String(h.n).indexOf(ql) === 0;
+  }
+  var hay = (h.t + ' ' + h.top + ' ' + h.v).toLocaleLowerCase('bs');
+  if (cu) hay += ' ' + cu.tr + ' ' + cu.top;
+  return hay.indexOf(ql) !== -1;
+}
+
+function doSearch() {
+  var q = document.getElementById('searchInput').value.toLocaleLowerCase('bs').trim();
+  var filtered = HAD.filter(function (h) { return (currentFilter === 'all' || h.c === currentFilter) && (!q || matchesHadith(h, q)); });
+  document.getElementById('resultCount').textContent = fmt(filtered.length);
+  document.getElementById('randomLabel').textContent = '';
+  renderHadithList(filtered, 'S');
+}
+
+var LIST_N = 60, listArr = [], listPage = 0;
+function renderHadithList(arr, tag) {
+  listArr = arr;
+  listPage = 0;
+  document.getElementById('resultCount').textContent = fmt(listArr.length);
+  var list = document.getElementById('hadithList');
+  if (!listArr.length) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>Nema rezultata</h3><p>Pokušajte s drugačijim pojmom ili provjerite referencu.</p></div>';
+    return;
+  }
+  var html = [];
+  if (tag === 'RND') html.push('<div style="text-align:center;padding:6px 0 4px;color:var(--text-light);font-size:12.5px">🎲 Nasumični hadis</div>');
+  if (tag === 'REF') html.push('<div style="text-align:center;padding:6px 0 4px;color:var(--text-light);font-size:12.5px">🔗 Otvorena referenca</div>');
+  list.innerHTML = html.join('');
+  appendListSlice();
+}
+function appendListSlice() {
+  var list = document.getElementById('hadithList');
+  var start = listPage * LIST_N;
+  if (start >= listArr.length) return;
+  var html = [];
+  for (var i = start; i < Math.min(listArr.length, start + LIST_N); i++) {
+    html.push(createHadithCard(listArr[i], i - start, (i - start) < 40));
+  }
+  if (listArr.length > start + LIST_N) {
+    var rest = listArr.length - start - LIST_N;
+    html.push('<div style="padding:10px 16px 14px"><button class="page-btn" style="width:100%" onclick="loadMoreHadiths()">⬇️ Prikaži još (' + fmt(rest) + ')</button></div>');
+  }
+  list.innerHTML += html.join('');
+}
+function loadMoreHadiths() { listPage++; appendListSlice(); }
+
+function createHadithCard(h, index, animate) {
+  var isFav = favorites.indexOf(h.key) !== -1;
+  var cu = h.cur;
+  var colBadge = h.c === 'Buhari' ? 'Sahih Buhari' : h.c;
+  var chapBadge = h.chap ? '<span class="hadith-badge badge-topic">📂 ' + esc(h.chap) + '</span>' : '';
+  var arabicHtml = cu && showArabic ? '<div class="arabic-text" style="font-size:22px">' + cu.ar + '</div>' : '';
+  var body = cu ? cu.tr : h.t;
+  var topHtml = (cu && cu.top ? cu.top : h.top) ;
+  var topBadge = topHtml ? '<span class="hadith-badge badge-topic">📂 ' + esc(topHtml) + '</span>' : '';
+  var narrator = cu && cu.na ? cu.na : (h.v || '');
+  var fullToggle = cu && h.t && h.t.trim() !== cu.tr.trim() ?
+    '<details class="btn-ghost" style="border:none;background:var(--bg);text-align:left"><summary style="cursor:pointer;font-weight:600;padding:2px 4px">📖 Cijeli tekst iz knjige</summary><div style="font-size:13.5px;line-height:1.7;padding:8px 4px 2px;color:var(--text)">' + esc(h.t) + '</div></details>'
+    : '';
+  var animStyle = animate ? ' style="animation-delay:' + Math.min(index * 0.03, 0.6) + 's"' : '';
+  var extNote = cu ? '<div class="hadith-narrator" style="border-top:none;padding-top:0;margin-top:4px"><span>ℹ️ Prikazano iz zbirke »' + esc(colBadge) + '« (br. ' + h.n + ')</span></div>' : '';
+  return '<div class="hadith-card"' + animStyle + '>' +
+    '<div class="hadith-header">' +
+      '<div class="hadith-meta">' +
+        '<span class="hadith-badge badge-collection">' + esc(colBadge) + '</span>' +
+        '<span class="hadith-badge badge-number">#' + h.n + '</span>' +
+        topBadge +
+        chapBadge +
+      '</div>' +
+      '<div class="hadith-actions">' +
+        '<button class="hadith-btn ' + (isFav ? 'bookmarked' : '') + '" onclick="toggleFav(\'' + h.key + '\')">' + (isFav ? '⭐' : '☆') + '</button>' +
+        '<button class="hadith-btn" onclick="shareHadith(\'' + h.key + '\')">📤</button>' +
+      '</div>' +
+    '</div>' +
+    arabicHtml +
+    '<div class="hadith-translation" style="font-size:' + transSize + 'px">' + esc(body) + '</div>' +
+    fullToggle +
+    (narrator ? '<div class="hadith-narrator"><span class="narrator-icon">👤</span>' + esc(narrator) + '</div>' : '') +
+    extNote +
+    '<div class="card-actions">' +
+      '<button class="btn-ghost" onclick="openHadithPdf(\'' + h.key + '\')">📖 Stranica u knjizi</button>' +
+      '<button class="btn-ghost" onclick="copyHadithImage(\'' + h.key + '\')">🖼️ Slika</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+function toggleFav(key) {
+  var i = favorites.indexOf(key);
+  if (i !== -1) { favorites.splice(i, 1); toast('Uklonjeno iz favorita'); }
+  else { favorites.push(key); toast('Dodano u favorite ⭐'); }
+  localStorage.setItem('ht_favs', JSON.stringify(favorites));
+  doSearch();
+  renderDaily();
+  if (document.getElementById('pageFavoriti').classList.contains('active')) renderFavorites();
+}
+
+function hadithByKey(key) {
+  for (var i = 0; i < HAD.length; i++) if (HAD[i].key === key) return HAD[i];
+  return null;
+}
+
+function openHadithRef(c, n) {
+  var h = findHadith(c, +n);
+  switchPage('pageHadisi');
+  setFilter('all');
+  renderHadithList(h ? [h] : [], 'REF');
+  if (!h) toast('Hadis ' + c + ' #' + n + ' nije pronađen');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openHadithPdf(key) {
+  var h = hadithByKey(key);
+  if (!h) return;
+  var title = collectionName(h) + ' - hadis #' + h.n;
+  var p = pdfByTitle(pdfTitleForHadith(h));
+  if (p) { openPdf(p.id, h.p, title); return; }
+  var rel = hadithRelPath(h);
+  if (!rel) { toast('Knjiga nije registrovana'); return; }
+  openPdf(rel, h.p, title);
+}
+
+/* =====================================================
+   KURAN TAB
+   ===================================================== */
+function fillSuraSelect() {
+  var sel = document.getElementById('suraSelect');
+  sel.innerHTML = DATA.q.map(function (s, i) {
+    return '<option value="' + (i + 1) + '">' + (i + 1) + '. ' + s.name + ' (' + s.a.length + ' ajeta)</option>';
+  }).join('');
+  sel.addEventListener('change', function () { renderSura(+sel.value, 1); });
+}
+function renderSura(sno, goA) {
+  var s = DATA.q[sno - 1];
+  if (!s) return;
+  document.getElementById('suraSelect').value = sno;
+  var list = document.getElementById('ayatList');
+  var q = (goA == null) ? document.getElementById('searchInput').value.toLocaleLowerCase('bs').trim() : '';
+  var html = [];
+  html.push('<div style="text-align:center;padding:6px 0 8px"><span class="hadith-badge badge-collection">Sura ' + sno + '</span> <span class="hadith-badge badge-number">' + esc(s.name) + '</span></div>');
+  s.a.forEach(function (t, i) {
+    var v = i + 1;
+    if (q && t.toLocaleLowerCase('bs').indexOf(q) === -1) return;
+    html.push('<div class="quran-ayet" id="ayet-' + sno + '-' + v + '"' + (goA === v ? ' style="border:2px solid var(--gold)"' : '') + '>' +
+      '<span class="quran-ref">' + sno + ':' + v + '</span>' +
+      '<div class="quran-text" style="font-size:' + transSize + 'px">' + esc(t) + '</div>' +
+      '<div class="quran-actions">' +
+      '<button class="btn-ghost" onclick="openQuranPdf(' + sno + ',' + v + ')">📖 Stranica</button>' +
+      '<button class="btn-ghost" onclick="gotoTefsirFor(' + sno + ',' + v + ')">📚 Tefsir</button>' +
+      '<button class="btn-ghost" onclick="shareAyet(' + sno + ',' + v + ')">📤</button>' +
+      '</div></div>');
+  });
+  list.innerHTML = html.join('') || '<div class="empty-state"><div class="icon">📗</div><h3>Nema rezultata</h3><p>Pokušajte drugi pojam.</p></div>';
+  if (goA) {
+    var el = document.getElementById('ayet-' + sno + '-' + goA);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+function openSuraRnd() { renderSura(Math.floor(Math.random() * 114) + 1, 1); }
+function quranJumpGo() {
+  var v = document.getElementById('quranJump').value.trim();
+  var r = parseRef(v) || parseRef('kuran ' + v);
+  if (r && r.type === 'quran') renderSura(r.s, r.a);
+  else if (/^\d{1,3}$/.test(v)) renderSura(+v, 1);
+  else toast('Format: 2:255');
+}
+function openQuranPdf(sno, a) {
+  var book = (DATA.books || []).filter(function (b) { return b.kind === 'quran' && b.title.indexOf('Mlivo') !== -1; })[0];
+  if (!book) { toast("Kur'an PDF nije registrovana"); return; }
+  var s = DATA.q[sno - 1];
+  var page = 1 + Math.round((a - 1) / s.a.length * 315); // approx in mlivo pdf (317p)
+  openPdf(book.file, Math.min(page - 1, 315), "Kur'an - Sura " + sno + ':' + a);
+}
+function shareAyet(sno, a) {
+  var s = DATA.q[sno - 1];
+  var text = '📗 ' + sno + ':' + a + ' — ' + s.name + '\n\n' + s.a[a - 1] + '\n\n— Hadis Tražilica';
+  doShare(text, 'Ajet');
+}
+function gotoTefsirFor(sno, a) { switchPage('pageTefsir', null, true); setTefsir(sno, a); }
+function openSuraByNumber(sno) { switchPage('pageKuran', null, true); renderSura(sno, 1); }
+
+/* =====================================================
+   TEFSIR TAB
+   ===================================================== */
+var tefST = { s: 2, a: 255 };
+function fillTefsirSelect() {
+  var sel = document.getElementById('tefSuraSelect');
+  sel.innerHTML = DATA.q.map(function (s, i) { return '<option value="' + (i + 1) + '">' + (i + 1) + '. ' + s.name + '</option>'; }).join('');
+  sel.addEventListener('change', function () { tefST.s = +sel.value; tefST.a = 1; renderTefsir(); });
+}
+function setTefsir(s, a) {
+  var info = DATA.t.filter(function (t) { return t.n === s; })[0];
+  if (info) {
+    document.getElementById('tefSuraSelect').value = s;
+    document.getElementById('tefAyetInput').value = a;
+    tefST = { s: s, a: a };
+    renderTefsir();
+  } else toast('Tefsir za suru ' + s + ' nije dostupan');
+}
+function tefGo() {
+  var s = +document.getElementById('tefSuraSelect').value;
+  var a = +document.getElementById('tefAyetInput').value || 1;
+  setTefsir(s, a);
+}
+function tefPrev() { tefNext(-1); }
+function tefNext(dir) {
+  var s = DATA.q[tefST.s - 1];
+  var a = tefST.a + (dir === -1 ? -1 : 1);
+  if (a < 1) { if (tefST.s > 1) { tefST.s--; a = DATA.q[tefST.s - 1].a.length; } else a = 1; }
+  else if (a > s.a.length) { if (tefST.s < 114) { tefST.s++; a = 1; } else a = s.a.length; }
+  document.getElementById('tefSuraSelect').value = tefST.s;
+  document.getElementById('tefAyetInput').value = a;
+  tefST.a = a;
+  renderTefsir();
+}
+function renderTefsir() {
+  var s = DATA.q[tefST.s - 1];
+  if (!s) return;
+  var a = Math.max(1, Math.min(s.a.length, tefST.a));
+  tefST.a = a;
+  var info = DATA.t.filter(function (t) { return t.n === tefST.s; })[0];
+  var out = document.getElementById('tefsirOut');
+  var pagesInfo = '';
+  var pageBtn = '';
+  if (info) {
+    var page = 1 + Math.round((a - 1) / (info.count || s.a.length) * (info.pages - 1));
+    pagesInfo = '<div class="tefsir-page-info">📖 Tefsir Ibn Kesir — <b>' + esc(info.name) + '</b> (' + info.pages + ' str.).<br>Ajet <b>' + tefST.s + ':' + a + '</b>: približno stranica <b>' + page + '</b> u PDF-u.</div>';
+    pageBtn = '<button class="btn-ghost" onclick="openTefsirPdf(' + tefST.s + ',' + a + ')">📖 Otvori Ibn Kesir (str. ' + page + ')</button>';
+  }
+  out.innerHTML =
+    '<div class="tefsir-card">' +
+      '<span class="hadith-badge badge-collection">Tefsir Ibn Kesir</span>' +
+      '<div style="font-weight:700;margin-top:10px;font-size:16px">' + tefST.s + '. ' + esc(s.name) + ' · ajet ' + a + '</div>' +
+      '<div class="tefsir-ayet">' + esc(s.a[a - 1]) + '</div>' +
+      pagesInfo +
+      '<div class="card-actions">' + pageBtn +
+      '<button class="btn-ghost" onclick="shareAyet(' + tefST.s + ',' + a + ')">📤 Podijeli ajet</button></div>' +
+    '</div>' +
+    '<div style="padding:0 16px"><div class="section-title">Prethodni · Sljedeći</div></div>';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function openTefsirPdf(sno, a) {
+  var info = DATA.t.filter(function (t) { return t.n === sno; })[0];
+  if (!info) return;
+  var title = 'Ibn Kesir — ' + info.name + ' (' + a + ')';
+  var p = pdfByTitle('Tefsir Ibn Kesir');
+  if (p) {
+    var start = 0;
+    (DATA.t || []).forEach(function (T) { if (T.n < sno) start += (T.pages || 0); });
+    var page = start + 1 + Math.round((a - 1) / Math.max(1, info.count || 1) * ((info.pages || 1) - 1));
+    page = Math.max(0, Math.min(page - 1, (p.pages || 99999) - 1));
+    openPdf(p.id, page, title);
+    return;
+  }
+  var page = 1 + Math.round((a - 1) / (info.count || 1) * (info.pages - 1));
+  openPdf('Tefsir Kur`ana/TEFSIR KUR\'ANA - TEFSIR IBN KESIR (PDF)/' + info.file, Math.min(page - 1, info.pages - 1), title);
+}
+function openTefsirSura(sno) { switchPage('pageTefsir', null, true); setTefsir(sno, 1); }
+
+/* =====================================================
+   BIBLIA TAB
+   ===================================================== */
+var bibST = { b: 0, c: 1, v: 1, online: false };
+function fillBookSelect() {
+  var sel = document.getElementById('bookSelect');
+  sel.innerHTML = '<option value="online">🌐 Biblija online (biblija.ks.hr)</option>' +
+    DATA.b.map(function (b, i) {
+      var ch = b.c.length;
+      return '<option value="' + i + '">' + esc(b.name) + ' (' + ch + ' poglavlja)</option>';
+    }).join('');
+  sel.addEventListener('change', function () {
+    if (sel.value === 'online') { renderBibleOnline(); return; }
+    bibST.online = false;
+    bibST.b = +sel.value; bibST.c = 1;
+    renderBibleBook(bibST.b, 1, 1);
+  });
+}
+function getChapter(bi, c) {
+  var b = DATA.b[bi];
+  for (var i = 0; i < b.c.length; i++) if (b.c[i][0] === c) return b.c[i][1];
+  return null;
+}
+function renderBibleBook(bi, cno, goV) {
+  bibST.online = false;
+  bibST.b = bi;
+  var b = DATA.b[bi];
+  if (!b) return;
+  document.getElementById('bookSelect').value = bi;
+  var chap = getChapter(bi, cno);
+  var list = document.getElementById('bibleList');
+  if (!chap) { list.innerHTML = '<div class="empty-state"><div class="icon">✝️</div><h3>Nema poglavlja</h3></div>'; return; }
+  var q = (goV == null) ? document.getElementById('searchInput').value.toLocaleLowerCase('bs').trim() : '';
+  var html = [];
+  var chSel = '<div class="filters-bar" id="bibleChapters">';
+  (JSON.parse(JSON.stringify(b.c.map(function (c) { return c[0]; })))).forEach(function (cn) {
+    chSel += '<button class="filter-chip' + (cn === cno ? ' active' : '') + '" onclick="renderBibleBook(' + bi + ',' + cn + ',1)">' + cn + '</button>';
+  });
+  chSel += '</div>';
+  list.innerHTML = chSel;
+  html.push('<div style="text-align:center;padding:4px 0 8px"><span class="hadith-badge badge-collection">' + esc(b.name) + '</span> <span class="hadith-badge badge-number">Poglavlje ' + cno + '</span></div>');
+  chap.forEach(function (vs) {
+    var v = vs[0], t = vs[1];
+    if (q && t.toLocaleLowerCase('bs').indexOf(q) === -1) return;
+    html.push('<div class="quran-ayet" id="bv-' + bi + '-' + cno + '-' + v + '"' + (goV === v ? ' style="border:2px solid var(--gold)"' : '') + '>' +
+      '<span class="quran-ref">' + esc(b.name) + ' ' + cno + ':' + v + '</span>' +
+      '<div class="quran-text" style="font-size:' + transSize + 'px">' + esc(t) + '</div>' +
+      '<div class="quran-actions">' +
+      '<button class="btn-ghost" onclick="openBiblePdf(' + bi + ',' + cno + ',' + v + ')">📖 Stranica</button>' +
+      '<button class="btn-ghost" onclick="shareBible(' + bi + ',' + cno + ',' + v + ')">📤</button>' +
+      '</div></div>');
+  });
+  list.innerHTML += html.join('') || '';
+  if (goV) {
+    var el = document.getElementById('bv-' + bi + '-' + cno + '-' + goV);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+function bibleJumpGo() {
+  var q = document.getElementById('bibleJump').value.trim();
+  if (bibST.online) { openBibleOnline(q); return; }
+  var r = parseRef(q) || parseRef(q.replace(/^([a-zžđščć0-9]+)\s+(\d{1,3})$/i, '$1 $2:1'));
+  if (r && r.type === 'bible') renderBibleBook(r.b, r.c, r.v);
+  else toast('Format: luka 2:12 ili ps 23');
+}
+function openBiblePdf(bi, cno, v) {
+  var book = (DATA.books || []).filter(function (b) { return b.kind === 'bible'; })[0];
+  if (!book) { toast('Biblija PDF nije registrovana'); return; }
+  // approximate global page: bible is 662 pages; we know printed page = the parsed header. Use flat ratio.
+  var cum = 0, target = 0, found = false;
+  for (var i = 0; i < bi; i++) cum += DATA.b[i].c.reduce(function (a, c) { return a + c[1].length; }, 0);
+  for (var ci = 0; ci < DATA.b[bi].c.length; ci++) {
+    var ch = DATA.b[bi].c[ci];
+    if (ch[0] === cno) { target = cum + (v - 1) * 1; found = true; break; }
+    cum += ch[1].length;
+  }
+  var pageEst = Math.round(target / 31102 * 610) + 8;
+  openPdf(book.file, Math.max(0, Math.min(pageEst - 1, 610)), DATA.b[bi].name + ' ' + cno + ':' + v);
+}
+function shareBible(bi, cno, v) {
+  var b = DATA.b[bi];
+  var ch = getChapter(bi, cno);
+  var t = ch.filter(function (x) { return x[0] === v; })[0];
+  doShare('✝️ ' + b.name + ' ' + cno + ':' + v + '\n\n' + (t ? t[1] : '') + '\n\n— Hadis Tražilica', 'Biblijski stih');
+}
+function openBibleRef(bname, c, v) {
+  var key = bname.toLocaleLowerCase('bs').replace(/[^a-z0-9žđščć]/g, '');
+  var bi = BIBLE_ALIASES[key];
+  if (bi === undefined) bi = 0;
+  switchPage('pageBiblija', null, true);
+  renderBibleBook(bi, +c, +v);
+}
+
+/* =====================================================
+   FAVORITES
+   ===================================================== */
+function renderFavorites() {
+  var list = document.getElementById('favoritesList');
+  var empty = document.getElementById('favoritesEmpty');
+  var items = favorites.map(hadithByKey).filter(Boolean);
+  if (!items.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = items.map(function (h, i) { return createHadithCard(h, i, true); }).join('');
+}
+
+/* =====================================================
+   SHARING
+   ===================================================== */
+function doShare(text, title) {
+  if (window.AndroidBridge && window.AndroidBridge.shareText) window.AndroidBridge.shareText(text);
+  else if (navigator.share) navigator.share({ title: title, text: text }).catch(function () {});
+  else navigator.clipboard.writeText(text).then(function () { toast('Kopirano u clipboard! 📋'); });
+}
+function shareHadith(key) {
+  var h = hadithByKey(key);
+  if (!h) return;
+  var cu = h.cur;
+  var body = cu ? cu.tr : h.t;
+  var text = '📖 ' + (h.c === 'Buhari' ? 'Sahih Buhari' : h.c) + ' (#' + h.n + ')\n\n' + (cu && showArabic ? cu.ar + '\n\n' : '') + body + '\n\n— Hadis Tražilica';
+  doShare(text, 'Hadis');
+}
+
+/* =====================================================
+   COPY AS IMAGE (canvas)
+   ===================================================== */
+function wrapText(ctx, text, maxW) {
+  var lines = [], line = '';
+  var words = text.split(' ');
+  for (var i = 0; i < words.length; i++) {
+    var test = line ? line + ' ' + words[i] : words[i];
+    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = words[i]; }
+    else line = test;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+function copyHadithImage(key) {
+  var h = hadithByKey(key);
+  if (!h) return;
+  var cu = h.cur;
+  var body = cu ? cu.tr : h.t;
+  var W = 820, pad = 40;
+  var c = document.createElement('canvas');
+  c.width = W;
+  c.height = 1200;
+  var ctx = c.getContext('2d');
+  ctx.font = '15px "Segoe UI", sans-serif';
+  ctx.textBaseline = 'top';
+  var est = 1200;
+  var draw = function () {
+    c.width = W; c.height = est;
+    ctx = c.getContext('2d');
+    ctx.textBaseline = 'top';
+    var grad = ctx.createLinearGradient(0, 0, 0, est);
+    grad.addColorStop(0, '#faf7f0'); grad.addColorStop(1, '#f1ece1');
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, est);
+    ctx.fillStyle = '#1a5c3a'; ctx.fillRect(0, 0, W, 8);
+    ctx.fillStyle = '#c9a84c'; ctx.fillRect(0, est - 10, W, 10);
+    ctx.font = '700 26px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#0e3d25';
+    ctx.fillText('📖 ' + (h.c === 'Buhari' ? 'Sahih Buhari' : h.c) + ' — hadis #' + h.n, pad, pad);
+    var y = pad + 46;
+    if (cu && cu.ar) {
+      ctx.font = '30px "Traditional Arabic","Scheherazade","Amiri"';
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#222';
+      var arW = W - pad * 2;
+      ctx.fillText(cu.ar, W - pad, y, arW);
+      ctx.textAlign = 'left';
+      y += 60;
+    }
+    if (!cu && h.v) {
+      ctx.font = '600 15px "Segoe UI"';
+      ctx.fillStyle = '#6b6b6b';
+      ctx.fillText('👤 ' + h.v, pad, y);
+      y += 30;
+    }
+    ctx.font = '18px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#1a1a1a';
+    var lines = wrapText(ctx, body, W - pad * 2 - 8);
+    var lh = 28;
+    if (y + lines.length * lh + 30 > est) { est = y + lines.length * lh + 90; draw(); return; }
+    for (var i = 0; i < lines.length; i++) ctx.fillText(lines[i], pad, y, W - pad * 2);
+    y += lines.length * lh + 20;
+    if (cu && cu.top) {
+      ctx.font = '600 15px "Segoe UI"';
+      ctx.fillStyle = '#1a5c3a';
+      ctx.fillText('📂 ' + cu.top, pad, y);
+      y += 34;
+    }
+    ctx.font = '13px "Segoe UI"';
+    ctx.fillStyle = '#8a857a';
+    ctx.fillText('— Hadis Tražilica', pad, est - 40);
+  };
+  var done = function () {
+    try {
+      c.toBlob(function (blob) {
+        if (!blob) { toast('Greška pri izradi slike'); return; }
+        if (window.AndroidBridge && window.AndroidBridge.shareImage && window.AndroidBridge.shareImage(blob)) return;
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'hadis.png', { type: 'image/png' })] })) {
+          navigator.share({ files: [new File([blob], 'hadis.png', { type: 'image/png' })], title: 'Hadis' }).catch(function () { savePng(blob); });
+        } else savePng(blob);
+      }, 'image/png');
+    } catch (e) { toast('Greška pri izradi slike'); }
+  };
+  toast('Izrada slike... 🖼️');
+  setTimeout(function () { draw(); done(); }, 30);
+}
+function savePng(blob) {
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'hadis.png';
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 500);
+  toast('Slika sačuvana 🖼️');
+}
+
+/* =====================================================
+   PDF VIEWER (lokalni iframe + online pdf.js)
+   ===================================================== */
+var libRoot = localStorage.getItem('ht_root') || 'C:\\Users\\adisn\\Desktop\\VJERSKE 2';
+var curPdf = { title: '', url: '' };
+function fileUrl(rel, page) {
+  var root = libRoot.replace(/[\\/]+$/, '');
+  var u = 'file:///' + root.replace(/\\/g, '/') + '/' + String(rel).replace(/\\/g, '/');
+  return encodeURI(u) + '#page=' + (Math.max(0, page) + 1);
+}
+function openPdf(rel, page0, title) {
+  var p = pdfById(rel);
+  if (p) { openOnlinePdf(p.url, page0 || 0, title || p.title, p.pages); return; }
+  if (/^https?:\/\//i.test(rel)) { openOnlinePdf(rel, page0 || 0, title || rel, 0); return; }
+  curPdf.title = title || rel;
+  var url = fileUrl(rel, page0);
+  document.getElementById('pdfTitle').textContent = curPdf.title + ' · str. ' + (page0 + 1);
+  document.getElementById('pdfLoading').style.display = 'flex';
+  document.getElementById('pdfFrame').src = url;
+  document.getElementById('pdfOverlay').classList.add('active');
+  showOnlinePdf(false);
+  var fr = document.getElementById('pdfFrame');
+  var hide = function () { document.getElementById('pdfLoading').style.display = 'none'; };
+  fr.onload = hide;
+  clearTimeout(curPdf.timer);
+  curPdf.timer = setTimeout(hide, 2500);
+}
+
+/* ---- online PDF preko pdf.js (dovoljno za telefon) ---- */
+var pdfDoc = null, pdfPageNo = 1, pdfScale = 1, pdfMaxPages = 1, pdfBusy = false;
+var PDFJS_URLS = [
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+  'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
+];
+function loadPdfJs() {
+  if (window.pdfjsLib && window.pdfjsLib.getDocument) return Promise.resolve(window.pdfjsLib);
+  var url = PDFJS_URLS[0];
+  return new Promise(function (res, rej) {
+    var s = document.createElement('script');
+    s.src = url;
+    s.onload = function () {
+      if (window.pdfjsLib && window.pdfjsLib.getDocument) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = url.replace('pdf.min.js', 'pdf.worker.min.js');
+        res(window.pdfjsLib);
+      } else rej(new Error('pdf.js se ne može učitati'));
+    };
+    s.onerror = function () { rej(new Error('CDN nedostupan')); };
+    document.head.appendChild(s);
+  });
+}
+function showOnlinePdf(on) {
+  document.getElementById('pdfCanvasWrap').style.display = on ? 'block' : 'none';
+  document.getElementById('pdfFrame').style.display = on ? 'none' : 'block';
+}
+function showPdfLoading(msg) {
+  var el = document.getElementById('pdfLoading');
+  if (msg) el.textContent = msg;
+  el.style.display = 'flex';
+}
+function openOnlinePdf(url, page0, title, totalPages) {
+  curPdf.url = url;
+  curPdf.title = title || 'PDF';
+  document.getElementById('pdfTitle').textContent = curPdf.title + ' · str. ' + (page0 + 1);
+  document.getElementById('pdfOverlay').classList.add('active');
+  showOnlinePdf(true);
+  pdfDoc = null; pdfPageNo = 1; pdfScale = 1; pdfMaxPages = Math.max(totalPages || 1, 1);
+  document.getElementById('pdfPageLabel').textContent = '… / ' + pdfMaxPages;
+  document.getElementById('pdfCanvas').width = 1;
+  document.getElementById('pdfCanvas').height = 1;
+  showPdfLoading('Učitavanje PDF-a sa servera…');
+  loadPdfJs().then(function (pdfjs) {
+    return pdfjs.getDocument({ url: url }).promise;
+  }).then(function (doc) {
+    pdfDoc = doc;
+    pdfMaxPages = doc.numPages;
+    pdfPageNo = Math.min(Math.max(1, (page0 || 0) + 1), pdfMaxPages);
+    document.getElementById('pdfLoading').style.display = 'none';
+    pdfRenderPage();
+  }).catch(function (e) {
+    document.getElementById('pdfLoading').style.display = 'none';
+    showOnlinePdf(false);
+    toast('Interni preglednik nije uspio — otvaram u pregledniku.');
+    setTimeout(function () { window.open(url, '_blank'); }, 400);
+  });
+}
+function pdfRenderPage() {
+  if (!pdfDoc || pdfBusy) return;
+  pdfBusy = true;
+  var wrap = document.getElementById('pdfCanvasWrap');
+  var baseW = Math.max(wrap.clientWidth || 600, 320);
+  pdfDoc.getPage(pdfPageNo).then(function (page) {
+    var vp = page.getViewport({ scale: 1 });
+    var scale = (baseW / vp.width) * pdfScale;
+    scale = Math.max(0.5, Math.min(3, scale));
+    var viewport = page.getViewport({ scale: scale });
+    var canvas = document.getElementById('pdfCanvas');
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
+    pdfBusy = false;
+    return page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+  }).catch(function () { pdfBusy = false; });
+  document.getElementById('pdfPageLabel').textContent = pdfPageNo + ' / ' + pdfMaxPages;
+}
+function pdfPrev() { if (!pdfDoc) return; if (pdfPageNo > 1) { pdfPageNo--; pdfRenderPage(); } }
+function pdfNext() { if (!pdfDoc) return; if (pdfPageNo < pdfMaxPages) { pdfPageNo++; pdfRenderPage(); } }
+function pdfZoomCur(d) { pdfScale = Math.max(0.5, Math.min(3, pdfScale + d)); if (pdfDoc) pdfRenderPage(); }
+function closePdf() {
+  document.getElementById('pdfOverlay').classList.remove('active');
+  document.getElementById('pdfFrame').src = 'about:blank';
+  showOnlinePdf(false);
+  document.getElementById('pdfCanvas').width = 1;
+  document.getElementById('pdfCanvas').height = 1;
+  pdfDoc = null;
+}
+function openPdfExternal() { window.open(curPdf.url, '_blank'); }
+function fillLibRoot() { document.getElementById('libRootInput').value = libRoot; }
+function saveLibRoot() {
+  libRoot = document.getElementById('libRootInput').value.trim();
+  localStorage.setItem('ht_root', libRoot);
+  toast('Mapa sačuvana ✅');
+}
+function pickLibrary() {
+  var inp = document.createElement('input');
+  inp.type = 'file'; inp.setAttribute('webkitdirectory', ''); inp.setAttribute('directory', '');
+  inp.onchange = function () {
+    if (inp.files && inp.files.length) {
+      var rel = inp.files[0].webkitRelativePath || inp.files[0].name;
+      var hint = rel.split('/')[0];
+      toast('📁 Odabrano: ' + hint + ' — upišite punu putanju mape u polje iznad.');
+    }
+  };
+  inp.click();
+}
+
+function fillServer() { var el = document.getElementById('serverUrlInput'); if (el) el.value = serverUrl; }
+function saveServer() {
+  var v = document.getElementById('serverUrlInput').value.trim();
+  serverUrl = v;
+  localStorage.setItem('ht_server', v);
+  tbFallback = false;
+  if (!srvBase()) {
+    toast('Adresa uklonjena — radim lokalno ✅');
+    resetData();
+    refreshApp();
+    return;
+  }
+  toast('Adresa sačuvana — učitavam biblioteku…');
+  loadCatalog().then(function (c) {
+    if (!c) return;
+    resetData();
+    refreshApp();
+    Promise.all([loadHadithDatasets(), loadQuranTefsir(), loadBible()]).then(function () {
+      toast('📚 Učitano ' + fmt(HAD.length) + ' hadisa s bibliotekom');
+    });
+  });
+}
+function testServer() {
+  saveServer();
+  if (!srvBase()) { toast('Unesite adresu servera (npr. https://ime.netlify.app)'); return; }
+  document.getElementById('serverTestResult').textContent = 'Provjera…';
+  loadCatalog().then(function (c) {
+    if (!c) { document.getElementById('serverTestResult').innerHTML = '<span style="color:#c0392b">❌ Katalog nije pronađen. Provjerite adresu (mora završava bez /).</span>'; return; }
+    var nd = c.datasets ? Object.keys(c.datasets).length : 0;
+    var np = c.pdfs ? c.pdfs.length : 0;
+    document.getElementById('serverTestResult').innerHTML = '<span style="color:#1a8f4c">✅ Katalog učitano: ' + (nd + np) + ' stavki (' + nd + ' tekstova + ' + np + ' PDF-a)</span>';
+    resetData();
+    refreshApp();
+    Promise.all([loadHadithDatasets(), loadQuranTefsir(), loadBible()]).then(function () {
+      toast('📚 Učitano ' + fmt(HAD.length) + ' hadisa s bibliotekom');
+    });
+  });
+}
+function resetData() {
+  DATA.hb = []; DATA.he = []; DATA.hz = [];
+  DATA.q = []; DATA.t = []; DATA.b = [];
+  DS = {};
+}
+
+/* =====================================================
+   SETTINGS
+   ===================================================== */
+function toggleTheme() {
+  isDarkMode = !isDarkMode;
+  localStorage.setItem('ht_dark', isDarkMode);
+  if (isDarkMode) { document.documentElement.setAttribute('data-theme', 'dark'); document.getElementById('themeBtn').textContent = '☀️'; document.getElementById('darkToggle').classList.add('active'); }
+  else { document.documentElement.removeAttribute('data-theme'); document.getElementById('themeBtn').textContent = '🌙'; document.getElementById('darkToggle').classList.remove('active'); }
+}
+function toggleArabic() {
+  showArabic = !showArabic;
+  localStorage.setItem('ht_arabic', showArabic);
+  document.getElementById('arabicToggle').classList.toggle('active', showArabic);
+  rerenderAll();
+}
+function changeTransSize(delta) {
+  transSize = Math.max(11, Math.min(26, transSize + delta));
+  localStorage.setItem('ht_trans', transSize);
+  document.getElementById('transSizeLabel').textContent = transSize;
+  rerenderAll();
+}
+function rerenderAll() {
+  doSearch();
+  renderDaily();
+  if (favorites.length) renderFavorites();
+}
+
+/* =====================================================
+   TOAST
+   ===================================================== */
+var toastTimer = null;
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2300);
+}
+
+/* =====================================================
+   INIT
+   ===================================================== */
+document.addEventListener('DOMContentLoaded', function () {
+  if (isDarkMode) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('themeBtn').textContent = '☀️';
+    document.getElementById('darkToggle').classList.add('active');
+  }
+  if (!showArabic) document.getElementById('arabicToggle').classList.remove('active');
+  document.getElementById('transSizeLabel').textContent = transSize;
+  renderStats();
+  renderDaily();
+  var si = document.getElementById('searchInput');
+  var deb;
+  si.addEventListener('input', function (e) {
+    clearTimeout(deb);
+    var v = e.target.value;
+    deb = setTimeout(function () {
+      var q = v.trim();
+      if (!q) { doSearch(); renderSuraCur(); renderBibleCur(); return; }
+      var r = parseRef(q);
+      if (r && r.type === 'bible' && bibST.online) return;
+      if (r && (r.type === 'bible' || r.type === 'quran' || r.type === 'tefsir')) { gotoRef(r); return; }
+      var active = document.querySelector('.page.active');
+      if (active && active.id === 'pageKuran') renderSuraCur();
+      else if (active && active.id === 'pageBiblija') renderBibleCur();
+      else doSearch();
+    }, 220);
+  });
+  si.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      var r = parseRef(si.value);
+      if (r) gotoRef(r);
+      else {
+        var q = si.value.trim();
+        if (q) { switchPage('pageHadisi'); setFilter('all'); doSearch(); }
+      }
+    }
+  });
+  fillSuraSelect(); fillTefsirSelect(); fillBookSelect();
+  renderSura(1, 1);
+  renderTefsir();
+  renderBibleBook(0, 1, 1);
+  serverStatus();
+  if (srvBase()) {
+    loadCatalog().then(function (c) {
+      if (!c) return;
+      Promise.all([loadHadithDatasets(), loadQuranTefsir(), loadBible()]).then(function () {
+        toast('📚 ' + fmt(HAD.length) + ' hadisa + cijela biblioteka sa servera');
+      });
+    });
+  }
+});
+function renderSuraCur() {
+  var s = +document.getElementById('suraSelect').value || 1;
+  renderSura(s, null);
+}
+function renderBibleCur() { if (bibST.online) return; renderBibleBook(bibST.b, bibST.c, null); }
+</script>
+</body>
+</html>
