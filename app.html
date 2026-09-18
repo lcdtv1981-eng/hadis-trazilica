@@ -202,6 +202,7 @@ select{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--borde
 <div class="page active" id="pageHome">
   <div class="stats-grid" id="statsGrid"></div>
   <div class="home-section" id="serverStatus" style="padding-top:0;padding-bottom:0;font-size:13px"></div>
+  <div id="diagStatus" style="padding:0 16px 12px;font-size:11px;color:#9a968c;line-height:1.6"></div>
   <div class="home-section">
     <div class="section-title">📅 Dnevni hadis</div>
     <div id="dailyCard"></div>
@@ -574,7 +575,9 @@ function xhrJson(url, prevErr) {
 }
 function loadCatalog() {
   var base = srvBase();
+  logDiag('Server: ' + (serverUrl || '-'));
   if (!base) return Promise.resolve(null);
+  logDiag('Učitavam: ' + base + 'katalog.json');
   return loadJson(base + 'katalog.json').then(function (c) {
     CAT = c;
     PDF_CAT = {}; PDF_BY_TITLE = {};
@@ -583,6 +586,7 @@ function loadCatalog() {
       PDF_CAT[p.id] = { id: p.id, title: p.title, url: abs, pages: p.pages || 0 };
       if (p.title) PDF_BY_TITLE[p.title] = PDF_CAT[p.id];
     });
+    logDiag('Katalog OK: ' + (c.pdfs || []).length + ' PDF · ' + Object.keys(c.datasets || {}).length + ' baza');
     return c;
   }).catch(function (e) {
     if (!tbFallback) {
@@ -592,10 +596,12 @@ function loadCatalog() {
       localStorage.setItem('ht_server', fall);
       var inp = document.getElementById('serverUrlInput');
       if (inp) inp.value = fall;
+      logDiag('Greška (' + (e && e.message ? e.message : '?') + ') → prelazim na: ' + fall);
       toast('Ta adresa nije dostupna — prebacujem na ' + (fall === DEFAULT_SERVER ? 'standardni server' : 'rezervni server') + '…');
       return loadCatalog();
     }
     CAT = null;
+    logDiag('Nije uspjelo: ' + (e && e.message ? e.message : 'greška'));
     toast('Katalog nije učitano: ' + (e && e.message ? e.message : 'greška'));
     serverStatus();
     return null;
@@ -818,6 +824,17 @@ function switchPage(id, el, silent) {
    HOME / DAILY
    ===================================================== */
 function fmt(n) { return n.toLocaleString('bs'); }
+
+function logDiag(msg) {
+  var el = document.getElementById('diagStatus');
+  if (!el) return;
+  var lines = el.getAttribute('data-lines') ? el.getAttribute('data-lines').split('\n') : [];
+  lines.push(msg);
+  lines = lines.filter(function (l) { return l; });
+  if (lines.length > 4) lines = lines.slice(lines.length - 4);
+  el.setAttribute('data-lines', lines.join('\n'));
+  el.innerHTML = lines.map(function (l) { return '<div>· ' + l + '</div>'; }).join('');
+}
 
 function renderStats() {
   var q = (DATA.q || []).reduce(function (a, s) { return a + s.a.length; }, 0);
@@ -1593,6 +1610,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('transSizeLabel').textContent = transSize;
   renderStats();
   renderDaily();
+  logDiag('Aplikacija pokrenuta');
   var si = document.getElementById('searchInput');
   var deb;
   si.addEventListener('input', function (e) {
@@ -1629,6 +1647,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loadCatalog().then(function (c) {
       if (!c) return;
       Promise.all([loadHadithDatasets(), loadQuranTefsir(), loadBible()]).then(function () {
+        logDiag('Biblioteka učitana: ' + fmt(HAD.length) + ' hadisa');
         toast('📚 ' + fmt(HAD.length) + ' hadisa + cijela biblioteka sa servera');
       });
     });
