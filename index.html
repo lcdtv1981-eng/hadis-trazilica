@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="bs"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hadis Tražilica — biblioteka</title>
+<style>
+ body{font-family:'Segoe UI',sans-serif;background:#f5f2eb;color:#1a1a1a;margin:0;padding:24px;display:flex;justify-content:center}
+ .c{max-width:520px;width:100%}
+ h1{font-size:22px;color:#0e3d25;margin-bottom:4px}
+ p{color:#6b6b6b;font-size:14px;line-height:1.6}
+ .ok{background:#e9f7ef;border:1px solid #b8e6cc;color:#1a8f4c;padding:12px 14px;border-radius:10px;font-size:14px;margin:14px 0}
+ table{width:100%;border-collapse:collapse;margin-top:8px}
+ td,th{text-align:left;padding:7px 10px;border-bottom:1px solid #e0ddd5;font-size:13.5px}
+ th{color:#6b6b6b;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+ a{color:#2d8a56}
+</style></head>
+<body><div class="c">
+ <h1>📖 Hadis Tražilica — biblioteka</h1>
+ <p>Ovo je Cloud server sa knjigama za aplikaciju «Hadis Tražilica».
+    U aplikaciji (Postavke → Adresa servera) unesite adresu ovog sajta.</p>
+ <div class="ok">✅ Server je aktivan — podaci se učitavaju normalno.</div>
+ <table id="t"></table>
+ <p style="font-size:12px">Ako ovo nije server aplikacije, kontaktirajte vlasnika sajta.</p>
+</div>
+<script>
+fetch('katalog.json').then(function(r){return r.json()}).then(function(c){
+  var n=((c.datasets&&Object.keys(c.datasets))||[]).length; var p=(c.pdfs||[]).length;
+  document.getElementById('t').innerHTML=
+   '<tr><th>Tekstualne knjige</th><th>PDF knjige</th></tr>'+
+   '<tr><td>'+n+' baza ('+Object.keys(c.datasets).join(', ')+')</td><td>'+p+' PDF-a</td></tr>';
+}).catch(function(){document.getElementById('t').innerHTML='<tr><td>Katalog se ne može pročitati.</td></tr>';});
+</script>
+</body></html>
